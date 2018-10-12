@@ -25,6 +25,8 @@ class Game:
 
     def load_sprites(self):
         self.all_sprites = pg.sprite.Group()
+        self.defences = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
         self.defence_center = DefenceCenter(self, tile_x=13, tile_y=11)
         self.menu = InGameMenu(self)
 

@@ -26,11 +26,9 @@ class InGameMenu(pg.sprite.Sprite):
 
     def load_defence_menu(self):
         self.defence_menu_items = [
-            UnitDataButton(self.game, 0),
-            UnitDataButton(self.game, 1)
+            UnitDataButton(self.game, 0)
         ]
         self.defence_menu_items[0].set_action(self.game.defence_center.build, 1)
-        self.defence_menu_items[1].set_action(self.game.defence_center.build, 2)
 
     def update(self):
         if self.mode == "defence":
@@ -51,7 +49,7 @@ class UnitData(pg.sprite.Sprite):
             self.image = kwargs.get("image")
         else:
             self.image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
-            self.image.fill(GREEN if i == 0 else RED)
+            self.image.fill(BLUE)
 
         self.rect = self.image.get_rect()
 
@@ -81,7 +79,7 @@ class ModeButton(pg.sprite.Sprite, ButtonBase):
             self.image = kwargs.get("image")
         else:
             self.image = pg.Surface((MODE_BUTTON_SIZE, MODE_BUTTON_SIZE))
-            self.image.fill(BLUE)
+            self.image.fill(GREEN)
 
         self.rect = self.image.get_rect()
 
@@ -92,7 +90,6 @@ class ModeButton(pg.sprite.Sprite, ButtonBase):
 
         self.mouse_down: bool = False
         self.button_action: tuple = (lambda: None, [], {})
-
 
 
 class MenuButton(pg.sprite.Sprite, ButtonBase):
