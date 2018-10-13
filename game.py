@@ -17,9 +17,14 @@ class Game:
         ###########################################################
 
     def load_assets(self):
-        self.defence_center_img = DefenceCenterImg().get_image()
         self.defence_mode_btn_image = DefenceModeBtnImg().get_image()
+        self.attack_mode_btn_image = AttackModeBtnImg().get_image()
+
+        self.defence_center_img = DefenceCenterImg().get_image()
+
         self.arrow_tower_image = ArrowTowerImg().get_image()
+        self.hood_warrior_image = HoodWarriorImg().get_image()
+
 
 
     def load_sprites(self):

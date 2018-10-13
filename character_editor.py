@@ -27,7 +27,7 @@ class CharacterEditor:
         self.data = [list([None]*TILE_SIZE) for i in range(TILE_SIZE)]
 
         row = 0
-        for col, colour in enumerate([WHITE, BLACK, LIGHTGREY, DARKGREY, BLUE, RED, GREEN, YELLOW]):
+        for col, colour in enumerate([WHITE, BLACK, LIGHTGREY, DARKGREY, BLUE, RED, GREEN, YELLOW, BROWN, DARK_BLUE]):
             if (col % 4) == 0 and col != 0:
                 row +=1
 

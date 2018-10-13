@@ -7,7 +7,8 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLUE = (66, 134, 244)
-
+BROWN = (147, 96, 59)
+DARK_BLUE = (58, 112, 150)
 # game settings
 
 FPS: int = 60
