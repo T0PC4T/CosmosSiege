@@ -8,8 +8,7 @@ class DefenceCenter(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
-        self.image = pg.Surface((TILE_SIZE*2, TILE_SIZE*2))
-        self.image.fill(WHITE)
+        self.image = game.defence_center_img
         self.rect = self.image.get_rect()
         self.rect.x = tile_x * TILE_SIZE
         self.rect.y = tile_y * TILE_SIZE

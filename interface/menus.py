@@ -75,12 +75,7 @@ class ModeButton(pg.sprite.Sprite, ButtonBase):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
-        if kwargs.get("image"):
-            self.image = kwargs.get("image")
-        else:
-            self.image = pg.Surface((MODE_BUTTON_SIZE, MODE_BUTTON_SIZE))
-            self.image.fill(GREEN)
-
+        self.image = game.defence_mode_btn_image
         self.rect = self.image.get_rect()
 
         self.rect.x = x

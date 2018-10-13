@@ -3,7 +3,7 @@ import pygame as pg
 class ButtonBase(object):
 
     def __init__(self):
-        self.mouse_down = False
+        self.mouse_down: bool = False
 
     def set_action(self, func, *args, **kwargs):
         self.button_action = (func, args, kwargs)
