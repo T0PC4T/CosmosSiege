@@ -33,7 +33,8 @@ class DefenceCenter(pg.sprite.Sprite):
 
         # Grid Variables
 
-    def get_type(self):
+    @staticmethod
+    def get_type():
         return "defence_center"
 
     def not_building(self):

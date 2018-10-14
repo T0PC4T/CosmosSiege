@@ -1,6 +1,6 @@
 import pygame as pg
 from settings import *
-from random import randint
+from random import randint, choice
 
 
 class AttackCenter(pg.sprite.Sprite):
@@ -30,15 +30,17 @@ class AttackCenter(pg.sprite.Sprite):
 
         # Grid Variables
 
-    def get_type(self):
+        self.generate_paths(self.game.grid)
+
+    @staticmethod
+    def get_type():
         return "attack_center"
 
     def attack(self, unit_cls):
         unit_cls(self.game)
 
-    def draw_effects(self):
-        # OTHER STUFF
-        pass
+    def get_path(self):
+        return choice(self.paths)
 
     def generate_paths(self, cur_grid):
         start_path = [self.tile_x, self.tile_y]
@@ -65,9 +67,10 @@ class AttackCenter(pg.sprite.Sprite):
             for pf in new_pathfinders:
                 pathfinders.append(pf)
 
-        print(len(pathfinders))
-        self.paths = paths
-        return self.paths
+        if paths:
+            self.paths = paths
+            return self.paths
+        return False
 
     def set_ready(self):
         pass
@@ -139,7 +142,7 @@ class PathFinder():
                 if self._get_grid_cell(ways[0]) is self.game.defence_center:
                     return "defence_center", self.path + [way]
                 else:
-                    new_pathfinders.append(PathFinder(self.game, self.grid, way, self.path))
+                    new_pathfinders.append(PathFinder(self.game, self.grid, way, list(self.path)))
 
             return "new_possibilities", new_pathfinders
 

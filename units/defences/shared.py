@@ -1,3 +1,7 @@
 class Defence():
-    def get_type(self):
+
+    @staticmethod
+    def get_type():
         return "defence"
+
+

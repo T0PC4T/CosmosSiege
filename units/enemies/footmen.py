@@ -1,11 +1,12 @@
 import pygame as pg
 from settings import *
 from random import randint
+from .shared import Attacker
 
-
-class HoodWarrior(pg.sprite.Sprite):
+class HoodWarrior(pg.sprite.Sprite, Attacker):
     def __init__(self, game):
         self.groups = game.all_sprites, game.enemies
+        Attacker.__init__(self, game, 1)
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
@@ -17,4 +18,4 @@ class HoodWarrior(pg.sprite.Sprite):
         # Defence Center variables
 
     def update(self):
-        self.rect.x += 1
+        self.attacker_update()
