@@ -1,50 +1,46 @@
 import pygame as pg
 from settings import *
 from .defences import *
+from random import randint
 
 class DefenceCenter(pg.sprite.Sprite):
-    def __init__(self, game, tile_x, tile_y):
+    def __init__(self, game):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
         self.image = game.defence_center_img
         self.rect = self.image.get_rect()
+
+        random_y = randint(0, ARENA_HEIGHT - TILE_SIZE)
+        tile_y = (random_y - (random_y % TILE_SIZE)) // TILE_SIZE
+        tile_x = ARENA_TILE_WIDTH-2
         self.rect.x = tile_x * TILE_SIZE
         self.rect.y = tile_y * TILE_SIZE
+
+        # Restrict grid
+
+        self.game.grid[tile_y][tile_x] = self
+        self.game.grid[tile_y][tile_x+1] = self
+        self.game.grid[tile_y+1][tile_x+1] = self
+        self.game.grid[tile_y+1][tile_x] = self
 
         # Defence Center variables
 
         self.gold = 100
         self.building = False
-        self.defences = list()
+        self.defences = Defenders(self.game)
 
         # Grid Variables
 
-        grid_row = range(0, ARENA_TILE_WIDTH)
-        grid_collumn = range(0, ARENA_TILE_HEIGHT)
-        self.grid_sector_dict = dict()
-
-        for c in grid_collumn:
-            for r in grid_row:
-                self.grid_sector_dict[self._gk(c, r)] = None
-
-        self.grid_sector_dict[self._gk(tile_x, tile_y)] = True
-        self.grid_sector_dict[self._gk(tile_x+1, tile_y)] = True
-        self.grid_sector_dict[self._gk(tile_x+1, tile_y+1)] = True
-        self.grid_sector_dict[self._gk(tile_x, tile_y+1)] = True
-
-    def _gk(self, x, y):
-        return "{}-{}".format(x, y)
-
-    def create_enemy_path(self):
-        pass
+    def get_type(self):
+        return "defence_center"
 
     def not_building(self):
         self.building = False
 
-    def build(self, unit_id):
-        self.unit_id = unit_id
+    def build(self, defence_cls):
+        self.defence_cls = defence_cls
 
         self.building_image = pg.Surface((TILE_SIZE, TILE_SIZE))
         self.building_image.fill(GREEN)
@@ -53,20 +49,21 @@ class DefenceCenter(pg.sprite.Sprite):
         self.building = True
 
     def draw_effects(self):
+
+        # BUILDING
+
         if self.building:
             self.draw_grid()
-            x, y = self.draw_building_blueprint()
-            if pg.mouse.get_pressed()[0]:
-                if not self.grid_sector_dict.get(self._gk(x, y), True):
-                    self.grid_sector_dict[self._gk(x, y)] = ArrowTower(self.game, x, y)
-                    self.not_building()
+            tile_x, tile_y = self.get_blueprint_pos()
+            self.game.screen.blit(self.building_image, (tile_x, tile_y))
 
-    def draw_building_blueprint(self):
+        # OTHER STUFF
+
+    def get_blueprint_pos(self):
         mouse_x, mouse_y = pg.mouse.get_pos()
-        tile_x = mouse_x - (mouse_x % TILE_SIZE)
-        tile_y = mouse_y - (mouse_y % TILE_SIZE)
-        self.game.screen.blit(self.building_image, (tile_x, tile_y))
-        return tile_x//TILE_SIZE, tile_y//TILE_SIZE
+        clean_x = mouse_x - (mouse_x % TILE_SIZE)
+        clean_y = mouse_y - (mouse_y % TILE_SIZE)
+        return clean_x, clean_y
 
     def draw_grid(self):
         for x in range(0, ARENA_WIDTH, TILE_SIZE):
@@ -74,6 +71,58 @@ class DefenceCenter(pg.sprite.Sprite):
 
         for y in range(0, ARENA_HEIGHT, TILE_SIZE):
             pg.draw.line(self.game.screen, LIGHTGREY, (0, y), (ARENA_WIDTH, y))
+
+    def set_ready(self):
+        pass
+
+    def update(self):
+
+        # BUILDING
+
+        if self.building and pg.mouse.get_pressed()[0]:
+            clean_x, clean_y = self.get_blueprint_pos()
+            tile_x, tile_y = clean_x//TILE_SIZE, clean_y//TILE_SIZE
+            if tile_x < ARENA_TILE_WIDTH and tile_y < ARENA_TILE_HEIGHT:
+                if not self.game.grid[tile_y][tile_x]:
+                    self.game.grid[tile_y][tile_x] = True
+                    r = self.game.attack_center.generate_paths(self.game.grid)
+
+                    if r:
+                        self.game.grid[tile_y][tile_x] = self.defences.add_defence(self.defence_cls(self.game, tile_x, tile_y))
+                        # self.not_building()
+                    else:
+                        self.game.grid[tile_y][tile_x] = None
+
+        # OTHER STUFF
+
+
+
+class Defenders():
+    def __init__(self, game):
+        self.game = game
+        self.defenders = list()
+
+    def add_defence(self, defender):
+        self.defenders.append(defender)
+        return defender
+
+    def try_build(self):
+        pass
+
+    def update(self):
+        pass
+
+
+class Enemies():
+    def __init__(self, game):
+        self.game = game
+        self.attackers = list()
+
+    def add_enemy(self, attacker):
+        self.attackers.append(attacker(self.game))
+
+    def start_round(self):
+        pass
 
     def update(self):
         pass

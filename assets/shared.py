@@ -24,17 +24,8 @@ class ImageBuilder(object):
 
         for row_i, row in enumerate(self.get_data()):
             for cell_i, cell_colour in enumerate(row):
-                # print(self.data[0])
-                # print("@@@@@@@@@@@@@@@@")
-                # print(row_i)
-                # print(cell_i)
-                # print(pixel_dim)
-
                 x = cell_i*pixel_dim
                 y = row_i*pixel_dim
-                # print(x)
-                # print(y)
-
                 px = pg.Surface((pixel_dim, pixel_dim))
                 px.fill(cell_colour)
                 self.canvas.blit(px, (x, y))

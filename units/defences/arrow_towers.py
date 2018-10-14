@@ -1,8 +1,9 @@
 import pygame as pg
 from settings import *
+from .shared import Defence
 
 
-class ArrowTower(pg.sprite.Sprite):
+class ArrowTower(pg.sprite.Sprite, Defence):
     def __init__(self, game, tile_x, tile_y):
         self.groups = game.all_sprites, game.defences
         pg.sprite.Sprite.__init__(self, self.groups)
