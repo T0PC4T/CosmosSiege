@@ -118,18 +118,3 @@ class Defenders():
 
     def update(self):
         pass
-
-
-class Enemies():
-    def __init__(self, game):
-        self.game = game
-        self.attackers = list()
-
-    def add_enemy(self, attacker):
-        self.attackers.append(attacker(self.game))
-
-    def start_round(self):
-        pass
-
-    def update(self):
-        pass

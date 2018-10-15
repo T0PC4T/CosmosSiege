@@ -15,9 +15,28 @@ class Attacker():
         self.rotation = 0
         self.vel = vec(0, 0)
 
+        # Affects
+
+        self.affects = list()
+        self.duration = 0
+
     @staticmethod
     def get_type():
         return "attackers"
+
+    def get_pos(self):
+        return self.pos
+
+    def remove_affect(self, affect):
+        pass
+
+    def set_affect(self, affect, duration):
+        if affect not in self.affects:
+            self.affects.append(affect)
+        self.duration = duration
+
+        if affect == "frozen":
+            pass
 
     def affects_update(self):
         pass

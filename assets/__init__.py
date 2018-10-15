@@ -1,3 +1,3 @@
 from .defences import *
-from .enemies import *
+from .attackers import *
 from .mode_btns import *

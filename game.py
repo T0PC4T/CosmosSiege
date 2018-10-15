@@ -20,7 +20,7 @@ class Game:
 
         self.all_sprites = pg.sprite.Group()
         self.defences = pg.sprite.Group()
-        self.enemies = pg.sprite.Group()
+        self.attackers = pg.sprite.Group()
         self.defence_center = DefenceCenter(self)
         self.attack_center = AttackCenter(self)
         self.menu = InGameMenu(self)
