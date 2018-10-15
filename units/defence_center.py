@@ -2,6 +2,7 @@ import pygame as pg
 from settings import *
 from .defences import *
 from random import randint
+vec = pg.math.Vector2
 
 class DefenceCenter(pg.sprite.Sprite):
     def __init__(self, game):
@@ -38,8 +39,8 @@ class DefenceCenter(pg.sprite.Sprite):
     def get_type():
         return "defence_center"
 
-    def subtract_life(self):
-        self.lives -= 1
+    def subtract_life(self, amount=1):
+        self.lives -= amount
         if self.lives == 0:
             self.kill()
 
@@ -95,7 +96,7 @@ class DefenceCenter(pg.sprite.Sprite):
                     r = self.game.attack_center.generate_paths(self.game.grid)
 
                     if r:
-                        self.game.grid[tile_y][tile_x] = self.defences.add_defence(self.defence_cls(self.game, tile_x, tile_y))
+                        self.game.grid[tile_y][tile_x] = self.defences.add_defence(self.defence_cls(self.game, vec(tile_x, tile_y) * TILE_SIZE))
                         # self.not_building()
                     else:
                         self.game.grid[tile_y][tile_x] = None

@@ -21,6 +21,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.defences = pg.sprite.Group()
         self.attackers = pg.sprite.Group()
+        self.projectiles = pg.sprite.Group()
         self.defence_center = DefenceCenter(self)
         self.attack_center = AttackCenter(self)
         self.menu = InGameMenu(self)
@@ -32,11 +33,13 @@ class Game:
 
         self.defence_center_img = DefenceCenterImg().get_image()
         self.attack_center_img = AttackCenterImg().get_image()
-        self.arrow_tower_image = ArrowTowerImg().get_image()
-        self.hood_warrior_image = HoodWarriorImg().get_image()
+        self.arrow_tower_img = ArrowTowerImg().get_image()
+        self.arrow_img = ArrowImg().get_image()
+        self.hood_warrior_img = HoodWarriorImg().get_image()
 
     def run(self):
         while self.playing:
+            self.clock.tick(FPS)
             self.events()
             self.update()
             self.draw()
@@ -50,6 +53,7 @@ class Game:
         self.all_sprites.update()
 
     def draw(self):
+        pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
         self.screen.fill(BGCOLOR)
         self.all_sprites.draw(self.screen)
         self.defence_center.draw_effects()

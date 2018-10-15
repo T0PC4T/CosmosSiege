@@ -37,7 +37,7 @@ class AttackCenter(pg.sprite.Sprite):
         return "attack_center"
 
     def attack(self, unit_cls):
-        unit_cls(self.game)
+        self.attackers.add_attacker(unit_cls)
 
     def get_path(self):
         return choice(self.paths)
@@ -73,10 +73,10 @@ class AttackCenter(pg.sprite.Sprite):
         return False
 
     def set_ready(self):
-        pass
+        self.attackers.start_round()
 
     def update(self):
-
+        self.attackers.update()
         # OTHER STUFF
         pass
 
@@ -133,7 +133,7 @@ class PathFinder():
         else:
             new_pathfinders = list()
             for way in ways[1:]:
-                if self._get_grid_cell(ways[0]) is self.game.defence_center:
+                if self._get_grid_cell(way) is self.game.defence_center:
                     return "defence_center", self.path + [way]
                 else:
                     new_pathfinders.append(PathFinder(self.game, self.grid, way, list(self.path)))
@@ -152,12 +152,31 @@ class Attackers():
     def __init__(self, game):
         self.game = game
         self.attackers = list()
+        self.round_active = False
+        self.spawn_interval = 30
+        self.spawn_i = 0
 
-    def add_enemy(self, attacker):
-        self.attackers.append(attacker(self.game))
+    def add_attacker(self, attacker):
+        self.attackers.append(attacker)
 
     def start_round(self):
-        pass
+        self.round_active = True
+
+    def end_round(self):
+        self.round_active = False
+
+    def spawn_attacker(self):
+        if not self.attackers:
+            self.end_round()
+        else:
+            attacker = choice(self.attackers)
+            self.attackers.remove(attacker)
+            attacker(self.game)
 
     def update(self):
-        pass
+        if self.round_active:
+            if self.spawn_i > 0:
+                self.spawn_i -=1
+            else:
+                self.spawn_attacker()
+                self.spawn_i = self.spawn_interval

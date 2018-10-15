@@ -52,7 +52,7 @@ class InGameMenu(pg.sprite.Sprite):
         self.mode = "attack"
         self.page = 0
 
-        units = [[self.game.hood_warrior_image, [self.game.attack_center.attack, HoodWarrior]]]
+        units = [[self.game.hood_warrior_img, [self.game.attack_center.attack, HoodWarrior]]]
 
         self.set_btns(units)
 
@@ -60,8 +60,8 @@ class InGameMenu(pg.sprite.Sprite):
         self.mode = "defence"
         self.page = 0
 
-        units = [[self.game.arrow_tower_image, [self.game.defence_center.build, ArrowTower]],
-                 [self.game.arrow_tower_image, [self.game.defence_center.build, ArrowTower]]]
+        units = [[self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]],
+                 [self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]]]
 
         self.set_btns(units)
 
@@ -106,7 +106,7 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
         self.rect.y = MENU_READY_Y
 
         self.ready = False
-        self.set_action(self.game.defence_center.set_ready)
+        self.set_action(self.game.attack_center.set_ready)
 
     def update(self):
         self.btn_update()

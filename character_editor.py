@@ -1,11 +1,11 @@
 import sys
 from interface.menu import *
 
-BLOCKS = [4, 2]
+BLOCKS = [0.5, 0.5]
 
 ED_TILE_SIZE = TILE_SIZE//2
-ARENA_WIDTH = (ED_TILE_SIZE*TILE_SIZE) * BLOCKS[0]
-ARENA_HEIGHT = (ED_TILE_SIZE*TILE_SIZE) * BLOCKS[1]
+ARENA_WIDTH = int((ED_TILE_SIZE*TILE_SIZE) * BLOCKS[0])
+ARENA_HEIGHT = int((ED_TILE_SIZE*TILE_SIZE) * BLOCKS[1])
 EDITOR_WIDTH = ARENA_WIDTH + ED_TILE_SIZE*4
 EDITOR_HEIGHT = ARENA_HEIGHT
 
@@ -18,8 +18,8 @@ class CharacterEditor:
         self.clock = pg.time.Clock()
         self.all_sprites = pg.sprite.Group()
         self.playing = True
-        self.tiles_width = TILE_SIZE*BLOCKS[0]
-        self.tiles_height = TILE_SIZE*BLOCKS[1]
+        self.tiles_width = int(TILE_SIZE*BLOCKS[0])
+        self.tiles_height = int(TILE_SIZE*BLOCKS[1])
         self.data = [list([None] * self.tiles_width) for i in range(self.tiles_height)]
 
         self.drawing = False
