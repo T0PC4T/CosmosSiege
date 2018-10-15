@@ -30,4 +30,6 @@ class ImageBuilder(object):
                 px.fill(cell_colour)
                 self.canvas.blit(px, (x, y))
 
+        self.canvas.set_colorkey(BLACK)
+
         return self.canvas

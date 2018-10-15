@@ -56,10 +56,10 @@ class AttackCenter(pg.sprite.Sprite):
 
                 if r_code == "new_possibilities":
                     new_pathfinders.extend(r_data)
-                elif r_code == "defence_center":
-                    paths.append(r_data)
                 elif r_code == "no_paths":
                     lost_pathfinders.append(pf)
+                elif r_code == "defence_center":
+                    paths.append(r_data)
 
             for pf in lost_pathfinders:
                 pathfinders.remove(pf)
@@ -131,18 +131,17 @@ class PathFinder():
             else:
                 return "new_possibilities", list()
         else:
-
-            self.current_position = ways[0]
-            self.path.append(ways[0])
-            if self._get_grid_cell(ways[0]) is self.game.defence_center:
-                return "defence_center", self.get_path()
-
             new_pathfinders = list()
             for way in ways[1:]:
                 if self._get_grid_cell(ways[0]) is self.game.defence_center:
                     return "defence_center", self.path + [way]
                 else:
                     new_pathfinders.append(PathFinder(self.game, self.grid, way, list(self.path)))
+
+            self.current_position = ways[0]
+            self.path.append(ways[0])
+            if self._get_grid_cell(ways[0]) is self.game.defence_center:
+                return "defence_center", self.get_path()
 
             return "new_possibilities", new_pathfinders
 

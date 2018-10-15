@@ -6,7 +6,7 @@ from .shared import Attacker
 class HoodWarrior(pg.sprite.Sprite, Attacker):
     def __init__(self, game):
         self.groups = game.all_sprites, game.enemies
-        Attacker.__init__(self, game, 1)
+        Attacker.__init__(self, game, 0.5)
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
@@ -18,4 +18,5 @@ class HoodWarrior(pg.sprite.Sprite, Attacker):
         # Defence Center variables
 
     def update(self):
+        print(self.path)
         self.attacker_update()
