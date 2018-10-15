@@ -18,5 +18,4 @@ class HoodWarrior(pg.sprite.Sprite, Attacker):
         # Defence Center variables
 
     def update(self):
-        print(self.path)
         self.attacker_update()

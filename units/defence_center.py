@@ -27,6 +27,7 @@ class DefenceCenter(pg.sprite.Sprite):
 
         # Defence Center variables
 
+        self.lives = 100
         self.gold = 100
         self.building = False
         self.defences = Defenders(self.game)
@@ -36,6 +37,11 @@ class DefenceCenter(pg.sprite.Sprite):
     @staticmethod
     def get_type():
         return "defence_center"
+
+    def subtract_life(self):
+        self.lives -= 1
+        if self.lives == 0:
+            self.kill()
 
     def not_building(self):
         self.building = False
