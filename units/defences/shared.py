@@ -62,17 +62,22 @@ class Projectile():
         self.pos = vec(pos)
 
         if bullet_alg == "predictive":
-            current_target_pos = vec(target.get_pos())
-            distance = current_target_pos - self.pos
-            distance_frames = distance.length() / speed
-            target_distance = target.get_velocity() * distance_frames
-            moved_target_pos = current_target_pos + target_distance
-            distance = moved_target_pos - self.pos
-            distance_frames = distance.length() / speed
-            moved_target_distance = target.get_velocity().scale_to_length(target.get_speed*distance_frames)
-            self.target_pos = moved_target_pos + moved_target_distance
+            if target.get_velocity() == 0:
+                self.target_pos = target.get_pos()
+            else:
+                current_target_pos = target.get_pos()
+                current_distance = current_target_pos - self.pos
+                distance_frames = current_distance.length() / speed
+                target_distance = target.get_velocity() * distance_frames
+                moved_target_pos = current_target_pos + target_distance
+                moved_distance = moved_target_pos - self.pos
+                distance_frames = moved_distance.length() / speed
+                moved_target_vec = target.get_velocity() * distance_frames
+                multiplier = moved_distance.length() / current_target_pos.length()
+                moved_target_vec.scale_to_length(moved_target_vec.length() * multiplier)
+                self.target_pos = moved_target_pos + moved_target_vec
         else:
-            self.target_pos = vec(target.get_pos())
+            self.target_pos = target.get_pos()
 
         self.speed = speed
         self.duration = duration
