@@ -16,16 +16,17 @@ class InGameMenu(pg.sprite.Sprite):
         self.mode = "defence"
         self.load_menus()
         self.page = 0
+        self.units = list()
 
     def load_menus(self):
         self.menu_info = MenuUnitInfo(self.game)
 
         ################################################################################################################
 
-        self.defense_menu_button = ModeButton(self.game, DEFENCE_MODE_X, MODE_Y, self.game.defence_mode_btn_image)
+        self.defense_menu_button = ModeButton(self.game, DEFENCE_MODE_X, MODE_Y, self.game.defence_mode_btn_img)
         self.defense_menu_button.set_action(lambda: self.set_defence_mode())
 
-        self.attack_menu_button = ModeButton(self.game, ATTACK_MODE_X, MODE_Y, self.game.attack_mode_btn_image)
+        self.attack_menu_button = ModeButton(self.game, ATTACK_MODE_X, MODE_Y, self.game.attack_mode_btn_img)
         self.attack_menu_button.set_action(lambda: self.set_attack_mode())
 
         ################################################################################################################
@@ -35,43 +36,55 @@ class InGameMenu(pg.sprite.Sprite):
         for i in range(UNIT_BTN_NUM):
             self.unit_btns.append(UnitButton(self.game, i))
 
+
         self.set_defence_mode()
+
+        self.prev_page_btn = PageButton(self.game, self, True)
+        self.next_page_btn = PageButton(self.game, self, False)
 
         ################################################################################################################
 
         self.ready_btn = ReadyButton(self.game)
 
-
     def next_page(self):
-        pass
+        if len(self.units) > UNIT_BTN_NUM*(self.page+1):
+            self.page +=1
+            self.set_btns()
 
     def prev_page(self):
-        pass
+        if self.page > 1:
+            self.page -= 1
+            self.set_btns()
 
     def set_attack_mode(self):
         self.mode = "attack"
         self.page = 0
 
-        units = [[self.game.hood_warrior_img, [self.game.attack_center.attack, HoodWarrior]]]
+        self.units = [[self.game.hood_warrior_img, [self.game.attack_center.attack, HoodWarrior]],
+                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]],
+                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]],
+                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]],
+                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]]]
 
-        self.set_btns(units)
+        self.set_btns()
 
     def set_defence_mode(self):
         self.mode = "defence"
         self.page = 0
 
-        units = [[self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]],
-                 [self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]]]
+        self.units = [[self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]],
+                     [self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]]]
 
-        self.set_btns(units)
+        self.set_btns()
 
-    def set_btns(self, units):
+    def set_btns(self):
         unit_btns = list()
         null_image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
         null_image.fill(DARK_GREY)
+
         for i in range(UNIT_BTN_NUM):
-            if len(units) > i+self.page*UNIT_BTN_NUM:
-                unit_btns.append(units[i])
+            if len(self.units) > i+self.page*UNIT_BTN_NUM:
+                unit_btns.append(self.units[i + (self.page*UNIT_BTN_NUM)])
             else:
                 unit_btns.append([null_image, [lambda: None]])
 
@@ -158,6 +171,34 @@ class ModeButton(ButtonBase, pg.sprite.Sprite):
 
     def update(self):
         self.btn_update()
+
+class PageButton(ButtonBase, pg.sprite.Sprite):
+    def __init__(self, game, menu, prev):
+        ButtonBase.__init__(self)
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+
+        self.game = game
+        self.menu = menu
+
+        if prev:
+            self.image = pg.transform.flip(self.game.page_btn_img, True, False)
+        else:
+            self.image = self.game.page_btn_img
+
+        self.rect = self.image.get_rect()
+        if prev:
+            self.rect.x = PAGE_PREV_X
+        else:
+            self.rect.x = PAGE_NEXT_X
+
+        self.rect.y = PAGE_Y
+
+        if prev:
+            self.set_action(self.menu.prev_page)
+        else:
+            self.set_action(self.menu.next_page)
+
 
 
 class MenuUnitInfo(pg.sprite.Sprite):

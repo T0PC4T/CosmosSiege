@@ -28,13 +28,15 @@ class Game:
 
 
     def load_assets(self):
-        self.defence_mode_btn_image = DefenceModeBtnImg().get_image()
-        self.attack_mode_btn_image = AttackModeBtnImg().get_image()
+        self.defence_mode_btn_img = DefenceModeBtnImg().get_image()
+        self.attack_mode_btn_img = AttackModeBtnImg().get_image()
+        self.page_btn_img = PageBtnImg().get_image()
         self.defence_center_img = DefenceCenterImg().get_image()
         self.attack_center_img = AttackCenterImg().get_image()
         self.arrow_tower_img = ArrowTowerImg().get_image()
         self.arrow_img = ArrowImg().get_image()
         self.hood_warrior_img = HoodWarriorImg().get_image()
+        self.element_warrior_img = ElementWarriorImg().get_image()
 
     def run(self):
         while self.playing:

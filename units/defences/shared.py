@@ -1,6 +1,7 @@
 from settings import *
 import pygame as pg
 vec = pg.math.Vector2
+import random
 
 class Defence():
 
@@ -37,7 +38,9 @@ class Defence():
                     self.target = None
 
         if not self.target:
-            for attacker in self.game.attackers:
+            attackers = list(self.game.attackers)
+            random.shuffle(attackers)
+            for attacker in attackers:
                 if not attacker.can_shoot:
                     continue
                 d = (self.pos - attacker.get_pos()).length()
@@ -69,15 +72,13 @@ class Projectile():
                 current_distance = current_target_pos - self.pos
                 distance_frames = current_distance.length() / speed
                 target_distance = target.get_velocity() * distance_frames
+
                 moved_target_pos = current_target_pos + target_distance
                 moved_distance = moved_target_pos - self.pos
-                distance_frames = moved_distance.length() / speed
-                moved_target_vec = target.get_velocity() * distance_frames
-                # multiplier = moved_distance.length() / current_target_pos.length()
-                multiplier = 1
-                # print(multiplier)
-                moved_target_vec.scale_to_length(moved_target_vec.length() * multiplier)
-                self.target_pos = moved_target_pos + moved_target_vec
+                distance_multiplier = moved_distance.length() / current_distance.length()
+                multiplied_frames = distance_frames * distance_multiplier
+                moved_target_vec = target.get_velocity() * multiplied_frames
+                self.target_pos = current_target_pos + moved_target_vec
         else:
             self.target_pos = target.get_pos()
 

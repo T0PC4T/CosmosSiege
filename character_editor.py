@@ -1,7 +1,7 @@
 import sys
 from interface.menu import *
 
-BLOCKS = [0.5, 0.5]
+BLOCKS = [1, 1]
 
 ED_TILE_SIZE = TILE_SIZE//2
 ARENA_WIDTH = int((ED_TILE_SIZE*TILE_SIZE) * BLOCKS[0])
@@ -46,32 +46,32 @@ class CharacterEditor:
 
     def increase_red(self):
         if self.drawing_colour[0] < 255:
-            self.drawing_colour[0] +=0.1
+            self.drawing_colour[0] +=0.8
 
     def decrease_red(self):
         if self.drawing_colour[0] > 0:
-            self.drawing_colour[0] -=0.1
+            self.drawing_colour[0] -=0.8
 
     def increase_green(self):
         if self.drawing_colour[1] < 255:
-            self.drawing_colour[1] +=0.1
+            self.drawing_colour[1] +=0.8
 
     def decrease_green(self):
         if self.drawing_colour[1] > 0:
-            self.drawing_colour[1] -=0.1
+            self.drawing_colour[1] -=0.8
 
     def increase_blue(self):
         if self.drawing_colour[2] < 255:
-            self.drawing_colour[2] +=0.1
+            self.drawing_colour[2] +=0.8
 
     def decrease_blue(self):
         if self.drawing_colour[2] > 0:
-            self.drawing_colour[2] -=0.1
+            self.drawing_colour[2] -=0.8
 
 
     def run(self):
         while self.playing:
-
+            self.clock.tick(FPS)
             self.events()
             self.update()
             self.draw()
@@ -133,7 +133,7 @@ class CharacterEditor:
 
         print("data = [")
         for row in clean_data:
-            print(str(row) + ",")
+            print(str(row).replace("'BGCOLOUR'", "BGCOLOUR") + ",")
         print("]")
 
     def events(self):

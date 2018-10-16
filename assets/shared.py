@@ -18,7 +18,7 @@ class ImageBuilder(object):
 
     def get_image(self):
         self.canvas = pg.Surface((self.width, self.height))
-        self.canvas.fill(BLACK)
+        self.canvas.fill(BGCOLOUR)
 
         pixel_dim = self.width // self.get_pixels()
 
@@ -30,6 +30,6 @@ class ImageBuilder(object):
                 px.fill(cell_colour)
                 self.canvas.blit(px, (x, y))
 
-        self.canvas.set_colorkey(BLACK)
+        self.canvas.set_colorkey(BGCOLOUR)
 
         return self.canvas
