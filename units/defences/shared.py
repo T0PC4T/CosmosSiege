@@ -60,16 +60,17 @@ class Projectile():
     def __init__(self, game, src_img, pos, target, speed, duration, damage, bullet_alg="predictive"):
         self.game = game
         self.pos = vec(pos)
+
         if bullet_alg == "predictive":
-            target_pos = vec(target.get_pos())
-            distance = target_pos - self.pos
+            current_target_pos = vec(target.get_pos())
+            distance = current_target_pos - self.pos
             distance_frames = distance.length() / speed
             target_distance = target.get_velocity() * distance_frames
-            target_pos = target_pos + target_distance
-            distance = target_pos - self.pos
+            moved_target_pos = current_target_pos + target_distance
+            distance = moved_target_pos - self.pos
             distance_frames = distance.length() / speed
-            target_distance = target.get_velocity() * distance_frames
-            self.target_pos = target_pos + target_distance
+            moved_target_distance = target.get_velocity().scale_to_length(target.get_speed*distance_frames)
+            self.target_pos = moved_target_pos + moved_target_distance
         else:
             self.target_pos = vec(target.get_pos())
 
@@ -77,7 +78,7 @@ class Projectile():
         self.duration = duration
         self.damage = damage
 
-        self.velocity = target_pos - pos
+        self.velocity = self.target_pos - pos
         self.velocity.scale_to_length(speed)
         self.rotation = self.velocity.angle_to(vec(1, 0))
 

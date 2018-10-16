@@ -32,7 +32,7 @@ class Attacker():
         return "attackers"
 
     def get_velocity(self):
-        return self.velocity
+        return vec(self.velocity)
 
     def get_pos(self):
         return self.pos

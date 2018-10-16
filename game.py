@@ -30,7 +30,6 @@ class Game:
     def load_assets(self):
         self.defence_mode_btn_image = DefenceModeBtnImg().get_image()
         self.attack_mode_btn_image = AttackModeBtnImg().get_image()
-
         self.defence_center_img = DefenceCenterImg().get_image()
         self.attack_center_img = AttackCenterImg().get_image()
         self.arrow_tower_img = ArrowTowerImg().get_image()
