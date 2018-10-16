@@ -54,7 +54,7 @@ class Game:
 
     def draw(self):
         pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
-        self.screen.fill(BGCOLOR)
+        self.screen.fill(BGCOLOUR)
         self.all_sprites.draw(self.screen)
         self.defence_center.draw_effects()
         pg.display.flip()

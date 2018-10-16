@@ -9,7 +9,7 @@ class InGameMenu(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((MENU_WIDTH, HEIGHT))
-        self.image.fill(BLACK)
+        self.image.fill(MENU_COLOUR)
         self.rect = self.image.get_rect()
         self.rect.x = ARENA_WIDTH
         self.rect.y = 0
@@ -32,7 +32,7 @@ class InGameMenu(pg.sprite.Sprite):
 
         self.unit_btns = list()
 
-        for i in range(6):
+        for i in range(UNIT_BTN_NUM):
             self.unit_btns.append(UnitButton(self.game, i))
 
         self.set_defence_mode()
@@ -66,22 +66,18 @@ class InGameMenu(pg.sprite.Sprite):
         self.set_btns(units)
 
     def set_btns(self, units):
-        num_change = 0
-        for i, u in enumerate(units):
-            num_change += 1
-            if i > len(self.unit_btns):
-                break
-
-            self.unit_btns[i].set_unit_btn(u[0])
-            self.unit_btns[i].set_action(*u[1])
-
+        unit_btns = list()
         null_image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
         null_image.fill(DARK_GREY)
-        for j in range(num_change % len(self.unit_btns)):
-            unit_btn_index = j+num_change
-            self.unit_btns[unit_btn_index].set_unit_btn(null_image)
-            self.unit_btns[unit_btn_index].set_action(lambda: None)
+        for i in range(UNIT_BTN_NUM):
+            if len(units) > i+self.page*UNIT_BTN_NUM:
+                unit_btns.append(units[i])
+            else:
+                unit_btns.append([null_image, [lambda: None]])
 
+        for i, b in enumerate(unit_btns):
+            self.unit_btns[i].set_unit_btn(b[0])
+            self.unit_btns[i].set_action(*b[1])
 
     def update(self):
         pass
@@ -138,13 +134,15 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
         self.rect.y = DATA_LIST_Y + (self.i * DATA_RECORD_HEIGHT)
 
 
-class ModeButton(pg.sprite.Sprite, ButtonBase):
+class ModeButton(ButtonBase, pg.sprite.Sprite):
     def __init__(self, game, x, y, image):
 
         # Sprite base
 
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
+        ButtonBase.__init__(self)
+
         self.game = game
 
         self.image = image

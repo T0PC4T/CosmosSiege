@@ -3,10 +3,11 @@ from settings import *
 
 class ButtonBase(object):
 
-    def __init__(self):
+    def __init__(self, hold=False):
         self.mouse_down: bool = False
         self.set_action(lambda: None)
         self.rect = None
+        self.hold = hold
 
     def set_action(self, func, *args, **kwargs):
         self.button_action = (func, args, kwargs)
@@ -28,7 +29,7 @@ class ButtonBase(object):
                 if pg.mouse.get_pressed()[0]:
                     self.mouse_down = True
         else:
-            if not pg.mouse.get_pressed()[0]:
+            if not pg.mouse.get_pressed()[0] or self.hold:
                 if self.is_mouse_over():
                     self.mouse_down = False
                     self.run_action()
