@@ -5,7 +5,7 @@ from .shared import Attacker
 
 class HoodWarrior(Attacker, pg.sprite.Sprite):
     def __init__(self, game):
-        Attacker.__init__(self, game, 1, 15, game.hood_warrior_img)
+        Attacker.__init__(self, game, 1, 30, game.hood_warrior_img)
         self.groups = game.all_sprites, game.attackers
         pg.sprite.Sprite.__init__(self, self.groups)
 
