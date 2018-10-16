@@ -31,11 +31,14 @@ class Attacker():
     def get_type():
         return "attackers"
 
+    def get_speed(self):
+        return self.speed
+
     def get_velocity(self):
-        return self.velocity
+        return vec(self.velocity)
 
     def get_pos(self):
-        return self.pos
+        return vec(self.pos)
 
     def subtract_health(self, amount):
         self.health -= amount
@@ -84,6 +87,8 @@ class Attacker():
 
         self.hit_rect.topleft = self.rect.topleft
 
+    def update(self):
+        self.attacker_update()
 
 
 

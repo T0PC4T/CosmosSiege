@@ -60,24 +60,32 @@ class Projectile():
     def __init__(self, game, src_img, pos, target, speed, duration, damage, bullet_alg="predictive"):
         self.game = game
         self.pos = vec(pos)
+
         if bullet_alg == "predictive":
-            target_pos = vec(target.get_pos())
-            distance = target_pos - self.pos
-            distance_frames = distance.length() / speed
-            target_distance = target.get_velocity() * distance_frames
-            target_pos = target_pos + target_distance
-            distance = target_pos - self.pos
-            distance_frames = distance.length() / speed
-            target_distance = target.get_velocity() * distance_frames
-            self.target_pos = target_pos + target_distance
+            if target.get_velocity().length() == 0:
+                self.target_pos = target.get_pos()
+            else:
+                current_target_pos = target.get_pos()
+                current_distance = current_target_pos - self.pos
+                distance_frames = current_distance.length() / speed
+                target_distance = target.get_velocity() * distance_frames
+                moved_target_pos = current_target_pos + target_distance
+                moved_distance = moved_target_pos - self.pos
+                distance_frames = moved_distance.length() / speed
+                moved_target_vec = target.get_velocity() * distance_frames
+                # multiplier = moved_distance.length() / current_target_pos.length()
+                multiplier = 1
+                # print(multiplier)
+                moved_target_vec.scale_to_length(moved_target_vec.length() * multiplier)
+                self.target_pos = moved_target_pos + moved_target_vec
         else:
-            self.target_pos = vec(target.get_pos())
+            self.target_pos = target.get_pos()
 
         self.speed = speed
         self.duration = duration
         self.damage = damage
 
-        self.velocity = target_pos - pos
+        self.velocity = self.target_pos - pos
         self.velocity.scale_to_length(speed)
         self.rotation = self.velocity.angle_to(vec(1, 0))
 
