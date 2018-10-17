@@ -46,8 +46,8 @@ class Game:
         self.attack_center_img = AttackCenterImg().get_image()
         self.arrow_tower_img = ArrowTowerImg().get_image()
         self.arrow_img = ArrowImg().get_image()
-        self.hood_warrior_img = HoodWarriorImg().get_image()
-        self.element_warrior_img = ElementWarriorImg().get_image()
+        self.scoutship_img = ScoutShipImg().get_image()
+        self.red_ship = RedShipImg().get_image()
 
         # FONTS
 

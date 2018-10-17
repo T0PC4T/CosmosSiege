@@ -62,11 +62,8 @@ class InGameMenu(pg.sprite.Sprite):
         self.mode = "attack"
         self.page = 0
 
-        self.units = [[self.game.hood_warrior_img, [self.game.attack_center.attack, HoodWarrior]],
-                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]],
-                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]],
-                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]],
-                 [self.game.element_warrior_img, [self.game.attack_center.attack, ElementWarrior]]]
+        self.units = [[self.game.scoutship_img, [self.game.attack_center.attack, ScoutShip]],
+                      [self.game.red_ship, [self.game.attack_center.attack, RedShip]]]
 
         self.set_btns()
 
@@ -111,16 +108,22 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
         self.game = game
 
         self.image = pg.Surface((MENU_READY_WIDTH, MENU_READY_HEIGHT))
-        self.image.fill(DARK_BLUE)
+        self.image.fill(MENU_READY_COLOUR)
         self.rect = self.image.get_rect()
         self.rect.x = MENU_READY_X
         self.rect.y = MENU_READY_Y
 
-        self.ready = False
         self.set_action(self.game.attack_center.set_ready)
 
     def update(self):
         self.btn_update()
+        if self.game.attack_center.round_active():
+            self.image = pg.Surface((MENU_READY_WIDTH, MENU_READY_HEIGHT))
+            self.image.fill(MENU_COLOUR)
+        else:
+            self.image = pg.Surface((MENU_READY_WIDTH, MENU_READY_HEIGHT))
+            self.image.fill(MENU_READY_COLOUR)
+
 
 
 class UnitButton(pg.sprite.Sprite, ButtonBase):
@@ -230,5 +233,5 @@ class MenuUnitInfo(pg.sprite.Sprite):
 
         for key, value in info_dict.items():
             textsurface = self.text_font.render('{}:{}'.format(key, value), False, (0, 0, 0))
-            self.image.blit(textsurface, (0+MENU_BORDER, (MENU_BORDER MENU_INFO_TEXT_SIZE)*i))
+            self.image.blit(textsurface, (0+MENU_BORDER, (MENU_INFO_TEXT_SIZE)*i))
             i +=1
