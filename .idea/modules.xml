@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/CosmosSiege.iml" filepath="$PROJECT_DIR$/.idea/CosmosSiege.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/blockdefense.iml" filepath="$PROJECT_DIR$/.idea/blockdefense.iml" />
     </modules>
   </component>

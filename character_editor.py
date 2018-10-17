@@ -26,7 +26,7 @@ class CharacterEditor:
         self.drawing_colour = [255, 255, 255]
         self.bg_colouring = False
         self.colour_buttons = list()
-
+        self.amount = 0.5
         x = self.get_area_width()
         y = 0
         self.bg_colour_btn = ColourButton(self, x, y, ED_TILE_SIZE*2, BGCOLOUR)
@@ -35,39 +35,31 @@ class CharacterEditor:
         base_y = ED_TILE_SIZE*4
         lower_y = ED_TILE_SIZE*5
 
-        self.ri_btn = ColourButton(self, x,                base_y, ED_TILE_SIZE, (255, 0, 0), [self.increase_red])
-        self.rd_btn = ColourButton(self, x,                lower_y, ED_TILE_SIZE, (55, 0, 0), [self.decrease_red])
-        self.gi_btn = ColourButton(self, x+ED_TILE_SIZE,   base_y, ED_TILE_SIZE, (0, 255, 0), [self.increase_green])
-        self.gd_btn = ColourButton(self, x+ED_TILE_SIZE,   lower_y, ED_TILE_SIZE, (0, 55, 0), [self.decrease_green])
-        self.bi_btn = ColourButton(self, x+ED_TILE_SIZE*2, base_y, ED_TILE_SIZE, (0, 0, 255), [self.increase_blue])
-        self.bd_btn = ColourButton(self, x+ED_TILE_SIZE*2, lower_y, ED_TILE_SIZE, (0, 0, 55), [self.decrease_blue])
+        self.ri_btn = ColourButton(self, x,                base_y, ED_TILE_SIZE, (255, 0, 0), [self.change_colour, [0, True]])
+        self.rd_btn = ColourButton(self, x,                lower_y, ED_TILE_SIZE, (55, 0, 0), [self.change_colour, [0, False]])
+        self.gi_btn = ColourButton(self, x+ED_TILE_SIZE,   base_y, ED_TILE_SIZE, (0, 255, 0), [self.change_colour, [1, True]])
+        self.gd_btn = ColourButton(self, x+ED_TILE_SIZE,   lower_y, ED_TILE_SIZE, (0, 55, 0), [self.change_colour, [1, False]])
+        self.bi_btn = ColourButton(self, x+ED_TILE_SIZE*2, base_y, ED_TILE_SIZE, (0, 0, 255), [self.change_colour, [2, True]])
+        self.bd_btn = ColourButton(self, x+ED_TILE_SIZE*2, lower_y, ED_TILE_SIZE, (0, 0, 55), [self.change_colour, [2, False]])
 
         pg.mouse.set_cursor((8, 8), (4, 4), (24, 24, 24, 231, 231, 24, 24, 24), (0, 0, 0, 0, 0, 0, 0, 0))
 
-    def increase_red(self):
-        if self.drawing_colour[0] < 255:
-            self.drawing_colour[0] +=0.8
+    def change_colour(self, colour_id, increase=True):
+        print(colour_id)
+        print(colour_id)
+        print(colour_id)
+        print(colour_id)
+        self.amount += 0.1
+        print(self.drawing_colour[colour_id])
+        if increase:
+            self.drawing_colour[colour_id] += self.amount
+        else:
+            self.drawing_colour[colour_id] -= self.amount
 
-    def decrease_red(self):
-        if self.drawing_colour[0] > 0:
-            self.drawing_colour[0] -=0.8
-
-    def increase_green(self):
-        if self.drawing_colour[1] < 255:
-            self.drawing_colour[1] +=0.8
-
-    def decrease_green(self):
-        if self.drawing_colour[1] > 0:
-            self.drawing_colour[1] -=0.8
-
-    def increase_blue(self):
-        if self.drawing_colour[2] < 255:
-            self.drawing_colour[2] +=0.8
-
-    def decrease_blue(self):
-        if self.drawing_colour[2] > 0:
-            self.drawing_colour[2] -=0.8
-
+        if self.drawing_colour[colour_id] > 255:
+            self.drawing_colour[colour_id] = 255
+        elif self.drawing_colour[colour_id] < 0:
+            self.drawing_colour[colour_id] = 0
 
     def run(self):
         while self.playing:
@@ -115,6 +107,8 @@ class CharacterEditor:
 
     def update(self):
         # update portion of the game loop
+        if self.amount > 1:
+            self.amount -= 0.01
         if not self.bg_colouring:
             self.paint_colour_btn.set_colour(self.drawing_colour)
         self.all_sprites.update()
@@ -127,7 +121,7 @@ class CharacterEditor:
                 if not cell or cell is BGCOLOUR:
                     row_list.append("BGCOLOUR")
                 else:
-                    row_list.append(cell.get_colour())
+                    row_list.append(int(cell.get_colour()))
 
             clean_data.append(row_list)
 
@@ -184,7 +178,7 @@ class ColourButton(pg.sprite.Sprite, ButtonBase):
         if not func:
             self.button_action: tuple = (lambda colour: editor.set_drawing_colour(colour), [self.colour], {})
         else:
-            self.set_action(*func)
+            self.set_action(func[0], *func[1])
 
     def get_colour(self):
         return (int(self.colour[0]), int(self.colour[1]), int(self.colour[2]))

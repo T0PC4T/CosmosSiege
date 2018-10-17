@@ -25,17 +25,27 @@ class Game:
         self.defences = pg.sprite.Group()
         self.attackers = pg.sprite.Group()
         self.projectiles = pg.sprite.Group()
+        self.menu = InGameMenu(self)
         self.defence_center = DefenceCenter(self)
         self.attack_center = AttackCenter(self)
-        self.menu = InGameMenu(self)
+
+        ###########################################################
+        # CIRCLE REFERENCE #
+        ###########################################################
+
+        self.menu.ready_btn.set_action(self.attack_center.set_ready)
+        self.menu.set_defence_mode()
+        self.menu.set_focus(self.defence_center)
 
     def load_assets(self):
+
         self.background_image = pg.Surface((ARENA_WIDTH, ARENA_HEIGHT))
         self.background_image.fill(BGCOLOUR)
-        for i in range(60):
+
+        for i in range(70):
             pos_x = randint(TILE_SIZE, ARENA_WIDTH-TILE_SIZE)
             pos_y = randint(TILE_SIZE, ARENA_WIDTH-TILE_SIZE)
-            size = randint(1, 5)
+            size = randint(1, 3)
             pg.draw.circle(self.background_image, WHITE, (pos_x, pos_y), size)
 
         # Other assets
@@ -44,8 +54,7 @@ class Game:
         self.page_btn_img = PageBtnImg().get_image()
         self.defence_center_img = DefenceCenterImg().get_image()
         self.attack_center_img = AttackCenterImg().get_image()
-        self.arrow_tower_img = ArrowTowerImg().get_image()
-        self.arrow_img = ArrowImg().get_image()
+        self.basic_turret_img = BasicTurret().get_image()
         self.scoutship_img = ScoutShipImg().get_image()
         self.red_ship = RedShipImg().get_image()
 

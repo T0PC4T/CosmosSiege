@@ -3,12 +3,14 @@ from settings import *
 from .defences import *
 from random import randint
 vec = pg.math.Vector2
+from .shared import Unit
 
-class DefenceCenter(pg.sprite.Sprite):
+
+class DefenceCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
+        Unit.__init__(self, game)
 
         self.image = pg.Surface((TILE_SIZE*2, TILE_SIZE*2))
         self.image.fill(BLACK)
@@ -20,7 +22,7 @@ class DefenceCenter(pg.sprite.Sprite):
         self.rect.x = tile_x * TILE_SIZE
         self.rect.y = tile_y * TILE_SIZE
 
-        pg.draw.circle(self.image, (randint(1, 255), randint(1, 255), randint(1, 255)), (0+TILE_SIZE, 0+TILE_SIZE), TILE_SIZE)
+        pg.draw.circle(self.image, (randint(1, 255), randint(1, 255), randint(1, 255)), (TILE_SIZE, TILE_SIZE), TILE_SIZE)
         self.image.set_colorkey(BLACK)
 
         # Restrict grid
@@ -33,7 +35,7 @@ class DefenceCenter(pg.sprite.Sprite):
         # Defence Center variables
 
         self.lives = 100
-        self.gold = 100
+        self.credits = 100
         self.building = False
         self.defences = Defenders(self.game)
 
@@ -42,6 +44,10 @@ class DefenceCenter(pg.sprite.Sprite):
     @staticmethod
     def get_type():
         return "defence_center"
+
+    def get_info(self):
+        return {"lives": str(self.lives),
+                "credits": str(self.credits)}
 
     def subtract_life(self, amount=1):
         self.lives -= amount
@@ -89,6 +95,7 @@ class DefenceCenter(pg.sprite.Sprite):
         pass
 
     def update(self):
+        self.btn_update()
 
         # BUILDING
 

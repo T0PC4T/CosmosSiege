@@ -1,2 +1,2 @@
-from .arrow_towers import ArrowTower
+from .basic_turrets import BasicTurret
 

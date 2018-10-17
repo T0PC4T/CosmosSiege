@@ -22,7 +22,6 @@ class InGameMenu(pg.sprite.Sprite):
     def load_menus(self):
         self.menu_info = MenuUnitInfo(self.game)
 
-        self.menu_info.set_info({"Lives": self.game.defence_center.lives})
         ################################################################################################################
 
         self.defence_menu_button = ModeButton(self.game, DEFENCE_MODE_X, MODE_Y, self.game.defence_mode_btn_img)
@@ -38,15 +37,15 @@ class InGameMenu(pg.sprite.Sprite):
         for i in range(UNIT_BTN_NUM):
             self.unit_btns.append(UnitButton(self.game, i))
 
-
-        self.set_defence_mode()
-
         self.prev_page_btn = PageButton(self.game, self, True)
         self.next_page_btn = PageButton(self.game, self, False)
 
         ################################################################################################################
 
         self.ready_btn = ReadyButton(self.game)
+
+    def set_focus(self, *args, **kwargs):
+        return self.menu_info.set_focus(*args, **kwargs)
 
     def next_page(self):
         if len(self.units) > UNIT_BTN_NUM*(self.page+1):
@@ -71,8 +70,8 @@ class InGameMenu(pg.sprite.Sprite):
         self.mode = "defence"
         self.page = 0
 
-        self.units = [[self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]],
-                     [self.game.arrow_tower_img, [self.game.defence_center.build, ArrowTower]]]
+        self.units = [[self.game.basic_turret_img, [self.game.defence_center.build, BasicTurret]],
+                     [self.game.basic_turret_img, [self.game.defence_center.build, BasicTurret]]]
 
         self.set_btns()
 
@@ -112,8 +111,6 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
         self.rect = self.image.get_rect()
         self.rect.x = MENU_READY_X
         self.rect.y = MENU_READY_Y
-
-        self.set_action(self.game.attack_center.set_ready)
 
     def update(self):
         self.btn_update()
@@ -221,17 +218,28 @@ class MenuUnitInfo(pg.sprite.Sprite):
         self.rect.x = MENU_INFO_X
         self.rect.y = MENU_INFO_Y
 
-        self.text_font = pg.font.SysFont('Comic Sans MS', MENU_INFO_TEXT_SIZE)
+        self.text_font = pg.font.Font(FONT_DIR, MENU_INFO_TEXT_SIZE)
 
+    def set_focus(self, focus_cls):
+        self.focus_cls = focus_cls
+
+
+    def update_focus(self):
+        if self.focus_cls:
+            self.set_clean_image()
+            self.set_info(self.focus_cls.get_info())
 
     def set_clean_image(self):
         self.image = pg.Surface((MENU_INFO_WIDTH, MENU_INFO_HEIGHT))
-        self.image.fill(LIGHTGREY)
+        self.image.fill((20, 20, 20))
 
     def set_info(self, info_dict):
         i = 0
-
         for key, value in info_dict.items():
-            textsurface = self.text_font.render('{}:{}'.format(key, value), False, (0, 0, 0))
-            self.image.blit(textsurface, (0+MENU_BORDER, (MENU_INFO_TEXT_SIZE)*i))
+
+            textsurface = self.text_font.render('{}: {}'.format(key, value), False, (51, 255, 0))
+            self.image.blit(textsurface, (0+MENU_BORDER, ((MENU_INFO_TEXT_SIZE)*i + MENU_BORDER)))
             i +=1
+
+    def update(self):
+        self.update_focus()

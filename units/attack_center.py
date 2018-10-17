@@ -1,13 +1,14 @@
 import pygame as pg
 from settings import *
 from random import randint, choice
+from .shared import Unit
 
 
-class AttackCenter(pg.sprite.Sprite):
+class AttackCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
+        Unit.__init__(self, game)
 
         self.image = game.attack_center_img
         self.rect = self.image.get_rect()
@@ -35,6 +36,10 @@ class AttackCenter(pg.sprite.Sprite):
     @staticmethod
     def get_type():
         return "attack_center"
+
+    def get_info(self):
+        return {"rnd": "active" if self.round_active() else "inactive",
+                "ships": self.attackers.num()}
 
     def round_active(self):
         return self.attackers.round_active
@@ -79,6 +84,7 @@ class AttackCenter(pg.sprite.Sprite):
         self.attackers.start_round()
 
     def update(self):
+        self.btn_update()
         self.attackers.update()
         # OTHER STUFF
         pass
@@ -159,6 +165,9 @@ class Attackers():
         self.spawn_interval = 30
         self.spawn_i = 0
         self.attacker_count = 0
+
+    def num(self):
+        return len(self.attackers) + len(self.game.attackers)
 
     def add_attacker(self, attacker):
         if not self.round_active:
