@@ -46,6 +46,7 @@ class Attacker():
             self.die()
 
     def die(self):
+        self.game.attack_center.attackers.i_died(self)
         self.can_shoot = False
         self.kill()
 

@@ -10,7 +10,8 @@ class DefenceCenter(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
-        self.image = game.defence_center_img
+        self.image = pg.Surface((TILE_SIZE*2, TILE_SIZE*2))
+        self.image.fill(BLACK)
         self.rect = self.image.get_rect()
 
         random_y = randint(0, ARENA_HEIGHT - TILE_SIZE)
@@ -18,6 +19,9 @@ class DefenceCenter(pg.sprite.Sprite):
         tile_x = ARENA_TILE_WIDTH-2
         self.rect.x = tile_x * TILE_SIZE
         self.rect.y = tile_y * TILE_SIZE
+
+        pg.draw.circle(self.image, (randint(1, 255), randint(1, 255), randint(1, 255)), (0+TILE_SIZE, 0+TILE_SIZE), TILE_SIZE)
+        self.image.set_colorkey(BLACK)
 
         # Restrict grid
 
@@ -48,13 +52,14 @@ class DefenceCenter(pg.sprite.Sprite):
         self.building = False
 
     def build(self, defence_cls):
-        self.defence_cls = defence_cls
+        if not self.game.attack_center.round_active():
+            self.defence_cls = defence_cls
 
-        self.building_image = pg.Surface((TILE_SIZE, TILE_SIZE))
-        self.building_image.fill(GREEN)
+            self.building_image = pg.Surface((TILE_SIZE, TILE_SIZE))
+            self.building_image.fill(GREEN)
 
-        pg.mouse.set_cursor((8, 8), (4, 4), (24, 24, 24, 231, 231, 24, 24, 24), (0, 0, 0, 0, 0, 0, 0, 0))
-        self.building = True
+            pg.mouse.set_cursor((8, 8), (4, 4), (24, 24, 24, 231, 231, 24, 24, 24), (0, 0, 0, 0, 0, 0, 0, 0))
+            self.building = True
 
     def draw_effects(self):
 
@@ -93,9 +98,9 @@ class DefenceCenter(pg.sprite.Sprite):
             if tile_x < ARENA_TILE_WIDTH and tile_y < ARENA_TILE_HEIGHT:
                 if not self.game.grid[tile_y][tile_x]:
                     self.game.grid[tile_y][tile_x] = True
-                    r = self.game.attack_center.generate_paths(self.game.grid)
-
-                    if r:
+                    ways = self.game.attack_center.generate_paths(self.game.grid)
+                    round_active = self.game.attack_center.round_active()
+                    if ways and not round_active:
                         self.game.grid[tile_y][tile_x] = self.defences.add_defence(self.defence_cls(self.game, vec(tile_x, tile_y) * TILE_SIZE))
                         # self.not_building()
                     else:

@@ -10,6 +10,7 @@ class InGameMenu(pg.sprite.Sprite):
         self.game = game
         self.image = pg.Surface((MENU_WIDTH, HEIGHT))
         self.image.fill(MENU_COLOUR)
+
         self.rect = self.image.get_rect()
         self.rect.x = ARENA_WIDTH
         self.rect.y = 0
@@ -21,10 +22,11 @@ class InGameMenu(pg.sprite.Sprite):
     def load_menus(self):
         self.menu_info = MenuUnitInfo(self.game)
 
+        self.menu_info.set_info({"Lives": self.game.defence_center.lives})
         ################################################################################################################
 
-        self.defense_menu_button = ModeButton(self.game, DEFENCE_MODE_X, MODE_Y, self.game.defence_mode_btn_img)
-        self.defense_menu_button.set_action(lambda: self.set_defence_mode())
+        self.defence_menu_button = ModeButton(self.game, DEFENCE_MODE_X, MODE_Y, self.game.defence_mode_btn_img)
+        self.defence_menu_button.set_action(lambda: self.set_defence_mode())
 
         self.attack_menu_button = ModeButton(self.game, ATTACK_MODE_X, MODE_Y, self.game.attack_mode_btn_img)
         self.attack_menu_button.set_action(lambda: self.set_attack_mode())
@@ -52,7 +54,7 @@ class InGameMenu(pg.sprite.Sprite):
             self.set_btns()
 
     def prev_page(self):
-        if self.page > 1:
+        if self.page > 0:
             self.page -= 1
             self.set_btns()
 
@@ -210,10 +212,23 @@ class MenuUnitInfo(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
-        self.image = pg.Surface((MENU_IMAGE_WIDTH, MENU_IMAGE_HEIGHT))
-        self.image.fill(WHITE)
+        self.set_clean_image()
 
         self.rect = self.image.get_rect()
-        self.rect.x = MENU_IMAGE_X
-        self.rect.y = MENU_IMAGE_Y
+        self.rect.x = MENU_INFO_X
+        self.rect.y = MENU_INFO_Y
 
+        self.text_font = pg.font.SysFont('Comic Sans MS', MENU_INFO_TEXT_SIZE)
+
+
+    def set_clean_image(self):
+        self.image = pg.Surface((MENU_INFO_WIDTH, MENU_INFO_HEIGHT))
+        self.image.fill(LIGHTGREY)
+
+    def set_info(self, info_dict):
+        i = 0
+
+        for key, value in info_dict.items():
+            textsurface = self.text_font.render('{}:{}'.format(key, value), False, (0, 0, 0))
+            self.image.blit(textsurface, (0+MENU_BORDER, (MENU_BORDER MENU_INFO_TEXT_SIZE)*i))
+            i +=1

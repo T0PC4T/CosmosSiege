@@ -187,7 +187,7 @@ class ColourButton(pg.sprite.Sprite, ButtonBase):
             self.set_action(*func)
 
     def get_colour(self):
-        return self.colour
+        return (int(self.colour[0]), int(self.colour[1]), int(self.colour[2]))
 
     def set_colour(self, colour):
         self.colour = colour

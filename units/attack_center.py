@@ -36,6 +36,9 @@ class AttackCenter(pg.sprite.Sprite):
     def get_type():
         return "attack_center"
 
+    def round_active(self):
+        return self.attackers.round_active
+
     def attack(self, unit_cls):
         self.attackers.add_attacker(unit_cls)
 
@@ -155,23 +158,29 @@ class Attackers():
         self.round_active = False
         self.spawn_interval = 30
         self.spawn_i = 0
+        self.attacker_count = 0
 
     def add_attacker(self, attacker):
-        self.attackers.append(attacker)
+        if not self.round_active:
+            self.attackers.append(attacker)
 
     def start_round(self):
-        self.round_active = True
+        if self.round_active == False:
+            self.attacker_count = len(self.attackers)
+            self.round_active = True
 
     def end_round(self):
         self.round_active = False
 
     def spawn_attacker(self):
-        if not self.attackers:
-            self.end_round()
-        else:
+        if self.attackers:
             attacker = choice(self.attackers)
             self.attackers.remove(attacker)
             attacker(self.game)
+
+    def i_died(self, unit_inst):
+        self.attacker_count -= 1
+
 
     def update(self):
         if self.round_active:
@@ -180,3 +189,6 @@ class Attackers():
             else:
                 self.spawn_attacker()
                 self.spawn_i = self.spawn_interval
+
+        if self.attacker_count <= 0:
+            self.end_round()
