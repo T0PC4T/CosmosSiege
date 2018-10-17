@@ -6,3 +6,7 @@ class Unit(ButtonBase):
         ButtonBase.__init__(self)
         self.game = game
         self.set_action(self.game.menu.set_focus, self)
+
+
+    def get_info(self):
+        return {"N/A":"N/A"}

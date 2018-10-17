@@ -2,11 +2,14 @@ from settings import *
 import pygame as pg
 vec = pg.math.Vector2
 import random
+from ..shared import Unit
 
-class Defence():
+class Defence(Unit):
 
-    def __init__(self, game, src_img, pos, min_range, max_range, fire_rate, projectile):
-        self.game = game
+    def __init__(self, game, src_img, pos, min_range, max_range, fire_rate,
+                 projectile, projectile_speed, projectile_duration, projectile_damage):
+        Unit.__init__(self, game)
+        self.src_img = src_img
         self.image = src_img
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
@@ -14,6 +17,9 @@ class Defence():
         self.min_range = min_range
         self.max_range = max_range
         self.projectile = projectile
+        self.projectile_speed = projectile_speed
+        self.projectile_duration = projectile_duration
+        self.projectile_damage = projectile_damage
         self.target = None
         self.fire_rate = fire_rate
         self.next_shot = 0
@@ -22,10 +28,23 @@ class Defence():
     def get_type():
         return "defence"
 
+    def get_range(self):
+        if self.max_range > TILE_SIZE*7:
+            return "LONG"
+        else:
+            return "SHORT"
+
+    def get_info(self):
+        return {"DMG": self.projectile_damage,
+                "RATE": self.fire_rate,
+                "RNG": self.get_range()}
+
+
     def vec_in_range(self, d):
         return d > self.min_range and d < self.max_range
 
     def defence_update(self):
+        self.btn_update()
         if self.next_shot > 0:
             self.next_shot -= 1
 
@@ -52,7 +71,8 @@ class Defence():
             self.shoot()
 
     def shoot(self):
-        self.projectile(self.game, self.pos, self.target)
+        self.projectile(self.game, self.pos, self.target,
+                        self.projectile_speed, self.projectile_duration, self.projectile_damage)
         self.next_shot = self.fire_rate
 
     def update(self):
@@ -103,7 +123,7 @@ class Projectile():
         self.kill()
 
     def hit(self, hit):
-        hit.subtract_health(self.damage)
+        hit.subtract_hp(self.damage)
         self.die()
 
     def bullet_update(self):

@@ -1,10 +1,11 @@
 from settings import *
 import pygame as pg
 vec = pg.math.Vector2
+from ..shared import Unit
 
-class Attacker():
-    def __init__(self, game, speed, health, src_img, destroy_lives=1):
-        self.game = game
+class Attacker(Unit):
+    def __init__(self, game, speed, hp, src_img, destroy_lives=1):
+        Unit.__init__(self, game)
         self.src_img = src_img
         self.image = src_img
         self.rect = self.image.get_rect()
@@ -13,7 +14,10 @@ class Attacker():
         self.hit_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE // 2, TILE_SIZE // 2)
 
         self.speed = speed
-        self.health = health
+
+        self.max_hp = hp
+        self.hp = hp
+
         self.destroy_lives = destroy_lives
         self.pos = vec(self.game.attack_center.rect.x, self.game.attack_center.rect.y)
         self.path = self.game.attack_center.get_path()
@@ -31,6 +35,10 @@ class Attacker():
     def get_type():
         return "attackers"
 
+    def get_info(self):
+        return {"HP": "{}/{}".format(self.hp, self.max_hp),
+                "SPEED": self.speed*10}
+
     def get_speed(self):
         return self.speed
 
@@ -40,9 +48,9 @@ class Attacker():
     def get_pos(self):
         return vec(self.pos)
 
-    def subtract_health(self, amount):
-        self.health -= amount
-        if self.health <= 0:
+    def subtract_hp(self, amount):
+        self.hp -= amount
+        if self.hp <= 0:
             self.die()
 
     def die(self):
@@ -65,7 +73,7 @@ class Attacker():
         pass
 
     def attacker_update(self):
-
+        self.btn_update()
         if not self.moving:
             self.moving = True
             if self.moving_pos_index == len(self.path):

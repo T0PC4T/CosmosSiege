@@ -1,6 +1,6 @@
 import pygame as pg
 from settings import *
-from random import randint, choice
+from random import randint, choice, shuffle
 from .shared import Unit
 
 
@@ -54,14 +54,17 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         start_path = [self.tile_x, self.tile_y]
         pathfinders = [PathFinder(self.game, cur_grid, start_path, list())]
         paths = list()
+        visited_cells_first = list()
         visited_cells = list()
         while len(paths) == 0 and pathfinders:
             lost_pathfinders = list()
             new_pathfinders = list()
             for pf in pathfinders:
                 r_code, r_data = pf.take_step(visited_cells)
-                visited_cells.append(pf.current_position)
-
+                if pf.current_position in visited_cells_first:
+                    visited_cells.append(pf.current_position)
+                else:
+                    visited_cells_first.append(pf.current_position)
                 if r_code == "new_possibilities":
                     new_pathfinders.extend(r_data)
                 elif r_code == "no_paths":
@@ -100,10 +103,12 @@ class PathFinder():
         self.path = path
 
     def _ways(self):
-        return [[self.current_position[0]+1, self.current_position[1]],
+        ways = [[self.current_position[0]+1, self.current_position[1]],
                 [self.current_position[0]-1, self.current_position[1]],
                 [self.current_position[0], self.current_position[1]+1],
                 [self.current_position[0], self.current_position[1]-1]]
+        shuffle(ways)
+        return ways
 
     def get_ways(self, visited_cells):
         possible_ways = list()
