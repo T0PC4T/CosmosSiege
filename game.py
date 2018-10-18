@@ -34,8 +34,6 @@ class Game:
         ###########################################################
 
         self.menu.ready_btn.set_action(self.attack_center.set_ready)
-        self.menu.set_defence_mode()
-        self.menu.set_focus(self.defence_center)
 
     def load_assets(self):
 

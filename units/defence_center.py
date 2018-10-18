@@ -12,10 +12,10 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         Unit.__init__(self, game)
 
+
         self.image = pg.Surface((TILE_SIZE*2, TILE_SIZE*2))
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
-
         random_y = randint(0, ARENA_HEIGHT - TILE_SIZE)
         tile_y = (random_y - (random_y % TILE_SIZE)) // TILE_SIZE
         tile_x = ARENA_TILE_WIDTH-2
@@ -25,6 +25,7 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         pg.draw.circle(self.image, (randint(1, 255), randint(1, 255), randint(1, 255)), (TILE_SIZE, TILE_SIZE), TILE_SIZE)
         self.image.set_colorkey(BLACK)
 
+        self.src_img = self.image
         # Restrict grid
 
         self.game.grid[tile_y][tile_x] = self
@@ -44,6 +45,9 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
     @staticmethod
     def get_type():
         return "defence_center"
+
+    def get_title(self):
+        return "Defence Ship"
 
     def get_info(self):
         return {"lives": str(self.lives),

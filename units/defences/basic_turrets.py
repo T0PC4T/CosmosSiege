@@ -3,6 +3,7 @@ from settings import *
 from .shared import Defence, Projectile
 from ..shared import Unit
 
+
 class BasicTurret(Defence, pg.sprite.Sprite):
     def __init__(self, game, pos):
         Defence.__init__(self, game, game.basic_turret_img, pos, TILE_SIZE*4, TILE_SIZE*24, FPS*2, Ball, 5, FPS*7, 5)
@@ -10,6 +11,9 @@ class BasicTurret(Defence, pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
 
         # Defence Center variables
+
+    def get_title(self):
+        return "Basic Turret"
 
     def update(self):
         self.defence_update()

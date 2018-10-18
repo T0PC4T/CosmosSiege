@@ -1,6 +1,7 @@
 import pygame as pg
 from .shared import Attacker
 
+
 class ScoutShip(Attacker, pg.sprite.Sprite):
     def __init__(self, game):
         Attacker.__init__(self, game, 1.2, 15, game.scoutship_img)
@@ -8,6 +9,10 @@ class ScoutShip(Attacker, pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
 
         # Defence Center variables
+
+    def get_title(self):
+        return "Flee Ship"
+
 
     # def update(self):
     #     self.attacker_update()
@@ -19,3 +24,5 @@ class RedShip(Attacker, pg.sprite.Sprite):
         self.groups = game.all_sprites, game.attackers
         pg.sprite.Sprite.__init__(self, self.groups)
 
+    def get_title(self):
+        return "Hull Ship"

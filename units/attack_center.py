@@ -10,6 +10,7 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         Unit.__init__(self, game)
 
+        self.src_img = game.attack_center_img
         self.image = game.attack_center_img
         self.rect = self.image.get_rect()
 
@@ -36,6 +37,9 @@ class AttackCenter(Unit, pg.sprite.Sprite):
     @staticmethod
     def get_type():
         return "attack_center"
+
+    def get_title(self):
+        return "Warp Zone"
 
     def get_info(self):
         return {"rnd": "active" if self.round_active() else "inactive",

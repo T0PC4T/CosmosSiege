@@ -121,7 +121,7 @@ class CharacterEditor:
                 if not cell or cell is BGCOLOUR:
                     row_list.append("BGCOLOUR")
                 else:
-                    row_list.append(int(cell.get_colour()))
+                    row_list.append(cell.get_colour())
 
             clean_data.append(row_list)
 
@@ -212,7 +212,7 @@ class ColourCube(pg.sprite.Sprite):
 
         # Other variables
 
-        self.colour = colour
+        self.colour = [int(i) for i in colour]
 
     def get_colour(self):
         return self.colour
