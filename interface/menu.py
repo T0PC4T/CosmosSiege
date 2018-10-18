@@ -15,7 +15,6 @@ class InGameMenu(pg.sprite.Sprite):
         self.rect.y = 0
         self.load_menus()
 
-
     def load_menus(self):
         self.menu_info = MenuUnitData(self.game)
         self.ready_btn = ReadyButton(self.game)
@@ -41,6 +40,9 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
 
         self.image = pg.Surface((MENU_READY_WIDTH, MENU_READY_HEIGHT))
         self.image.fill(MENU_READY_COLOUR)
+
+        self.title_font = pg.font.Font(FONT_DIR, MENU_INFO_TITLE)
+
         self.rect = self.image.get_rect()
         self.rect.x = MENU_READY_X
         self.rect.y = MENU_READY_Y
@@ -50,9 +52,14 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
         if self.game.attack_center.round_active():
             self.image = pg.Surface((MENU_READY_WIDTH, MENU_READY_HEIGHT))
             self.image.fill(MENU_COLOUR)
+            text_surface = self.title_font.render("Ready", False, BLACK)
+            self.image.blit(text_surface, (TILE_SIZE*1.5, TEXT_PADDING*3))
         else:
             self.image = pg.Surface((MENU_READY_WIDTH, MENU_READY_HEIGHT))
             self.image.fill(MENU_READY_COLOUR)
+            text_surface = self.title_font.render("Ready", False, WHITE)
+            self.image.blit(text_surface, (TILE_SIZE*1.5, TEXT_PADDING*3))
+
 
 
 class UnitButton(pg.sprite.Sprite, ButtonBase):
@@ -139,22 +146,22 @@ class MenuUnitData(pg.sprite.Sprite):
         self.set_clean_unit()
         scaled_img = pg.transform.scale(img, (UNIT_IMG_WIDTH-TEXT_PADDING*2, UNIT_IMG_HEIGHT-TEXT_PADDING*2))
         self.image.blit(scaled_img, (TEXT_PADDING, TITLE_STRIP_HEIGHT+TEXT_PADDING))
-        textsurface = self.title_font.render(title, False, FONT_COLOUR)
-        self.image.blit(textsurface, (TEXT_PADDING, TEXT_PADDING))
+        text_surface = self.title_font.render(title, False, FONT_COLOUR)
+        self.image.blit(text_surface, (TEXT_PADDING, TEXT_PADDING))
 
         # Unit Btns
 
         for i, unit_btn in enumerate(self.unit_btns):
             if len(self.unit_options) > i + (self.page * UNIT_BTN_NUM):
                 unit_option = self.unit_options[i]
-                unit_option_canvas = pg.Surface((DATA_RECORD_WIDTH, DATA_LIST_HEIGHT))
+                unit_option_canvas = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
                 unit_option_canvas.fill(DARK_GREY)
                 unit_option_image = unit_option[0][0]
                 unit_option_image = pg.transform.scale(unit_option_image, (DATA_RECORD_HEIGHT, DATA_RECORD_HEIGHT))
                 unit_option_canvas.blit(unit_option_image, (0, 0))
                 unit_option_text = unit_option[0][1]
                 unit_option_text = self.text_font.render(unit_option_text, False, FONT_COLOUR)
-                unit_option_canvas.blit(unit_option_text, (DATA_RECORD_HEIGHT + TEXT_PADDING, TEXT_PADDING))
+                unit_option_canvas.blit(unit_option_text, (DATA_RECORD_HEIGHT + TEXT_PADDING, TEXT_PADDING*2))
                 unit_btn.set_unit_btn(unit_option_canvas, unit_option[1])
             else:
                 unit_btn.set_unit_btn()

@@ -89,6 +89,9 @@ class CharacterEditor:
         for y in range(0, self.get_area_height(), ED_TILE_SIZE):
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (self.get_area_width(), y))
 
+        pg.draw.line(self.screen, WHITE, (self.get_area_width()//2, 0), (self.get_area_width()//2, self.get_area_height()))
+        pg.draw.line(self.screen, WHITE, (0, self.get_area_height()//2), (self.get_area_width(), self.get_area_height()//2))
+
     def draw(self):
         pg.display.set_caption("{}".format([int(i) for i in self.drawing_colour]))
         self.screen.fill(BLACK)
