@@ -2,7 +2,7 @@ import pygame as pg
 from settings import *
 from random import randint, choice, shuffle
 from .shared import Unit
-
+from .attackers import *
 
 class AttackCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
@@ -44,6 +44,10 @@ class AttackCenter(Unit, pg.sprite.Sprite):
     def get_info(self):
         return {"rnd": "active" if self.round_active() else "inactive",
                 "ships": self.attackers.num()}
+
+    def get_options(self):
+        return [[[self.game.scoutship_img, "Flee Ship"], [self.game.attack_center.attack, ScoutShip]],
+                [[self.game.red_ship, "Red Ship"], [self.game.attack_center.attack, RedShip]]]
 
     def round_active(self):
         return self.attackers.round_active

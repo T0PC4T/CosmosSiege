@@ -6,6 +6,7 @@ from ..shared import Unit
 class Attacker(Unit):
     def __init__(self, game, speed, hp, src_img, destroy_lives=1):
         Unit.__init__(self, game)
+        self.groups = game.all_sprites, game.attackers
         self.src_img = src_img
         self.image = src_img
         self.rect = self.image.get_rect()

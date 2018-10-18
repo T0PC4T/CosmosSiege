@@ -28,7 +28,7 @@ class Game:
         self.menu = InGameMenu(self)
         self.defence_center = DefenceCenter(self)
         self.attack_center = AttackCenter(self)
-
+        self.menu.set_focus(Unit(self))
         ###########################################################
         # CIRCLE REFERENCE #
         ###########################################################
@@ -47,8 +47,6 @@ class Game:
             pg.draw.circle(self.background_image, WHITE, (pos_x, pos_y), size)
 
         # Other assets
-        self.defence_mode_btn_img = DefenceModeBtnImg().get_image()
-        self.attack_mode_btn_img = AttackModeBtnImg().get_image()
         self.page_btn_img = PageBtnImg().get_image()
         self.defence_center_img = DefenceCenterImg().get_image()
         self.attack_center_img = AttackCenterImg().get_image()

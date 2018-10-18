@@ -47,11 +47,14 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         return "defence_center"
 
     def get_title(self):
-        return "Defence Ship"
+        return "Planet"
 
     def get_info(self):
         return {"lives": str(self.lives),
                 "credits": str(self.credits)}
+
+    def get_options(self):
+        return [[[self.game.basic_turret_img, "Beam Turret"], [self.game.defence_center.build, BasicTurret]]]
 
     def subtract_life(self, amount=1):
         self.lives -= amount

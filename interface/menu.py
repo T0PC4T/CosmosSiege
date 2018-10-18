@@ -1,7 +1,6 @@
 import pygame as pg
 from settings import *
 from .buttons import ButtonBase
-from units import *
 
 class InGameMenu(pg.sprite.Sprite):
     def __init__(self, game):
@@ -57,7 +56,7 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
 
 
 class UnitButton(pg.sprite.Sprite, ButtonBase):
-    def __init__(self, game, i, **kwargs):
+    def __init__(self, game, i):
 
         # Sprite base
 
@@ -68,18 +67,136 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
         self.game = game
         self.i = i
 
-        image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
-        image.fill(BLACK)
-        self.set_unit_btn(image)
+        self.null_image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
+        self.null_image.fill(DARK_GREY)
+        self.set_unit_btn()
 
     def update(self):
         self.btn_update()
 
-    def set_unit_btn(self, image):
-        self.image = image
+    def set_unit_btn(self, image=None, func=(lambda:None,)):
+        self.set_action(*func)
+        self.image = image or self.null_image
         self.rect = self.image.get_rect()
         self.rect.x = DATA_LIST_X
         self.rect.y = DATA_LIST_Y + (self.i * DATA_RECORD_HEIGHT)
+
+class MenuUnitData(pg.sprite.Sprite):
+    def __init__(self, game):
+        self.game = game
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+
+        self.image = pg.Surface((MENU_INFO_WIDTH, (TITLE_STRIP_HEIGHT + MENU_INFO_HEIGHT + DATA_LIST_HEIGHT)))
+        self.image.fill(DARK_GREY)
+
+        self.set_clean_info()
+
+        self.rect = self.image.get_rect()
+        self.rect.x = MENU_X
+        self.rect.y = MENU_Y
+
+        self.focus_cls = None
+
+        self.title_font = pg.font.Font(FONT_DIR, MENU_INFO_TITLE)
+        self.text_font = pg.font.Font(FONT_DIR, MENU_INFO_TEXT_SIZE)
+
+        # MENU BTNS
+
+        self.unit_btns = list()
+        self.unit_options = list()
+
+        for i in range(UNIT_BTN_NUM):
+            self.unit_btns.append(UnitButton(self.game, i))
+
+        self.prev_page_btn = PageButton(self.game, self, True)
+        self.next_page_btn = PageButton(self.game, self, False)
+
+        self.page = 0
+        self.units = list()
+
+    def set_focus(self, focus_cls):
+        self.focus_cls = focus_cls
+        self.set_unit(focus_cls.get_title(), focus_cls.get_img(), focus_cls.get_options())
+
+    def update_focus(self):
+        if self.focus_cls:
+            self.set_clean_info()
+            self.set_info(self.focus_cls.get_info())
+
+    def set_clean_unit(self):
+        title_image = pg.Surface((TITLE_STRIP_WIDTH, MENU_INFO_Y))
+        title_image.fill(DARK_GREY)
+        self.image.blit(title_image, (0, 0))
+
+    def set_clean_info(self):
+        info_image = pg.Surface((MENU_INFO_WIDTH, MENU_INFO_HEIGHT))
+        info_image.fill(GREY)
+        self.image.blit(info_image, (0, MENU_INFO_Y))
+
+    def set_unit(self, title, img, unit_options):
+        self.unit_options = unit_options
+        self.set_clean_unit()
+        scaled_img = pg.transform.scale(img, (UNIT_IMG_WIDTH-TEXT_PADDING*2, UNIT_IMG_HEIGHT-TEXT_PADDING*2))
+        self.image.blit(scaled_img, (TEXT_PADDING, TITLE_STRIP_HEIGHT+TEXT_PADDING))
+        textsurface = self.title_font.render(title, False, FONT_COLOUR)
+        self.image.blit(textsurface, (TEXT_PADDING, TEXT_PADDING))
+
+        # Unit Btns
+
+        for i, unit_btn in enumerate(self.unit_btns):
+            if len(self.unit_options) > i + (self.page * UNIT_BTN_NUM):
+                unit_option = self.unit_options[i]
+                unit_option_canvas = pg.Surface((DATA_RECORD_WIDTH, DATA_LIST_HEIGHT))
+                unit_option_canvas.fill(DARK_GREY)
+                unit_option_image = unit_option[0][0]
+                unit_option_image = pg.transform.scale(unit_option_image, (DATA_RECORD_HEIGHT, DATA_RECORD_HEIGHT))
+                unit_option_canvas.blit(unit_option_image, (0, 0))
+                unit_option_text = unit_option[0][1]
+                unit_option_text = self.text_font.render(unit_option_text, False, FONT_COLOUR)
+                unit_option_canvas.blit(unit_option_text, (DATA_RECORD_HEIGHT + TEXT_PADDING, TEXT_PADDING))
+                unit_btn.set_unit_btn(unit_option_canvas, unit_option[1])
+            else:
+                unit_btn.set_unit_btn()
+
+
+    def set_info(self, info_dict):
+        i = 0
+        for key, value in info_dict.items():
+            textsurface = self.text_font.render('{}: {}'.format(key, value), False, FONT_COLOUR)
+            y = MENU_INFO_Y + (TILE_SIZE)*i
+            self.image.blit(textsurface, (TEXT_PADDING, y))
+            i +=1
+
+    def next_page(self):
+        if len(self.units) > UNIT_BTN_NUM*(self.page+1):
+            self.page +=1
+            self.set_btns()
+
+    def prev_page(self):
+        if self.page > 0:
+            self.page -= 1
+            self.set_btns()
+
+    def set_btns(self):
+        unit_btns = list()
+        null_image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
+        null_image.fill(DARK_GREY)
+
+        for i in range(UNIT_BTN_NUM):
+            if len(self.units) > i+self.page*UNIT_BTN_NUM:
+                unit_btns.append(self.units[i + (self.page*UNIT_BTN_NUM)])
+            else:
+                unit_btns.append([null_image, [lambda: None]])
+
+        for i, b in enumerate(unit_btns):
+            self.unit_btns[i].set_unit_btn(b[0])
+            self.unit_btns[i].set_action(*b[1])
+
+    def update(self):
+        self.update_focus()
+
+
 
 
 class PageButton(ButtonBase, pg.sprite.Sprite):
@@ -109,117 +226,3 @@ class PageButton(ButtonBase, pg.sprite.Sprite):
         else:
             self.set_action(self.menu.next_page)
 
-
-class MenuUnitData(pg.sprite.Sprite):
-    def __init__(self, game):
-        self.game = game
-        self.groups = game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-
-        self.image = pg.Surface((MENU_INFO_WIDTH, (TITLE_STRIP_HEIGHT + MENU_INFO_HEIGHT + DATA_LIST_HEIGHT)))
-        self.image.fill((20, 20, 20))
-
-        self.set_clean_info_image()
-
-        self.rect = self.image.get_rect()
-        self.rect.x = MENU_X
-        self.rect.y = MENU_Y
-
-        self.focus_cls = None
-
-        self.title_font = pg.font.Font(FONT_DIR, MENU_INFO_TITLE)
-        self.text_font = pg.font.Font(FONT_DIR, MENU_INFO_TEXT_SIZE)
-
-        # MENU BTNS
-
-        self.unit_btns = list()
-
-        for i in range(UNIT_BTN_NUM):
-            self.unit_btns.append(UnitButton(self.game, i))
-
-        self.prev_page_btn = PageButton(self.game, self, True)
-        self.next_page_btn = PageButton(self.game, self, False)
-
-        self.page = 0
-        self.units = list()
-
-    def set_focus(self, focus_cls):
-        self.focus_cls = focus_cls
-        self.set_unit(focus_cls.get_title(), focus_cls.get_img())
-
-    def update_focus(self):
-        if self.focus_cls:
-            self.set_clean_info_image()
-            self.set_info(self.focus_cls.get_info())
-
-    def set_clean_unit(self):
-        title_image = pg.Surface((TITLE_STRIP_WIDTH, DATA_LIST_Y))
-        title_image.fill((20, 20, 20))
-        self.image.blit(title_image, (0, 0))
-
-    def set_clean_info_image(self):
-        info_image = pg.Surface((MENU_INFO_WIDTH, MENU_INFO_HEIGHT))
-        info_image.fill((20, 20, 20))
-        self.image.blit(info_image, (MENU_INFO_X, MENU_INFO_Y))
-
-    def set_unit(self, title, img):
-        self.set_clean_unit()
-        scaled_img = pg.transform.scale(img, (UNIT_IMG_WIDTH, UNIT_IMG_HEIGHT))
-        self.image.blit(scaled_img, (0, TITLE_STRIP_HEIGHT))
-        textsurface = self.title_font.render(title, False, FONT_COLOUR)
-        self.image.blit(textsurface, (MENU_BORDER, MENU_BORDER))
-
-    def set_info(self, info_dict):
-        i = 0
-        for key, value in info_dict.items():
-            textsurface = self.text_font.render('{}: {}'.format(key, value), False, FONT_COLOUR)
-            y = MENU_INFO_Y + (MENU_BORDER*i)
-            self.image.blit(textsurface, (MENU_BORDER, y))
-            i +=1
-
-
-    def next_page(self):
-        if len(self.units) > UNIT_BTN_NUM*(self.page+1):
-            self.page +=1
-            self.set_btns()
-
-    def prev_page(self):
-        if self.page > 0:
-            self.page -= 1
-            self.set_btns()
-
-    def set_attack_mode(self):
-        self.mode = "attack"
-        self.page = 0
-
-        self.units = [[self.game.scoutship_img, [self.game.attack_center.attack, ScoutShip]],
-                      [self.game.red_ship, [self.game.attack_center.attack, RedShip]]]
-
-        self.set_btns()
-
-    def set_defence_mode(self):
-        self.mode = "defence"
-        self.page = 0
-
-        self.units = [[self.game.basic_turret_img, [self.game.defence_center.build, BasicTurret]],
-                     [self.game.basic_turret_img, [self.game.defence_center.build, BasicTurret]]]
-
-        self.set_btns()
-
-    def set_btns(self):
-        unit_btns = list()
-        null_image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
-        null_image.fill(DARK_GREY)
-
-        for i in range(UNIT_BTN_NUM):
-            if len(self.units) > i+self.page*UNIT_BTN_NUM:
-                unit_btns.append(self.units[i + (self.page*UNIT_BTN_NUM)])
-            else:
-                unit_btns.append([null_image, [lambda: None]])
-
-        for i, b in enumerate(unit_btns):
-            self.unit_btns[i].set_unit_btn(b[0])
-            self.unit_btns[i].set_action(*b[1])
-
-    def update(self):
-        self.update_focus()
