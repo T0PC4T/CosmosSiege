@@ -12,8 +12,15 @@ class BasicTurret(Defence, pg.sprite.Sprite):
 
         # Defence Center variables
 
+    def upgrade_fire_rate(self):
+        if self.fire_rate > 10 and self.game.defence_center.buy_option(20):
+            self.fire_rate -= 5
+
     def get_title(self):
         return "Basic Turret"
+
+    def get_options(self):
+        return [[[self.game.blue_add_img, "Fire rate"], [self.upgrade_fire_rate]]]
 
     def update(self):
         self.defence_update()

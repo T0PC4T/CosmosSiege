@@ -14,7 +14,7 @@ class ScoutShip(Attacker, pg.sprite.Sprite):
 
 class RedShip(Attacker, pg.sprite.Sprite):
     def __init__(self, game):
-        Attacker.__init__(self, game, 0.8, 30, game.red_ship)
+        Attacker.__init__(self, game, 0.8, 30, game.red_ship_img)
         pg.sprite.Sprite.__init__(self, self.groups)
 
     def get_title(self):

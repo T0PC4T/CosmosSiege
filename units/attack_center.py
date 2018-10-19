@@ -47,7 +47,7 @@ class AttackCenter(Unit, pg.sprite.Sprite):
 
     def get_options(self):
         return [[[self.game.scoutship_img, "Flee Ship"], [self.game.attack_center.attack, ScoutShip]],
-                [[self.game.red_ship, "Red Ship"], [self.game.attack_center.attack, RedShip]]]
+                [[self.game.red_ship_img, "Red Ship"], [self.game.attack_center.attack, RedShip]]]
 
     def round_active(self):
         return self.attackers.round_active
