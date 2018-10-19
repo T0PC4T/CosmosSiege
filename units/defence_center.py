@@ -36,7 +36,8 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         # Defence Center variables
 
         self.lives = 100
-        self.credits = 100
+        self.credits = 200
+        self.income = 10
         self.building = False
         self.defences = Defenders(self.game)
 
@@ -50,11 +51,25 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         return "Planet"
 
     def get_info(self):
-        return {"lives": str(self.lives),
-                "credits": str(self.credits)}
+        return {"Lives": str(self.lives),
+                "Level": 0,
+                "Credits": int(self.credits),
+                "Income": int(self.income),
+                }
 
     def get_options(self):
         return [[[self.game.basic_turret_img, "Beam Turret"], [self.game.defence_center.build, BasicTurret]]]
+
+    def get_global_info(self):
+        return self.credits, self.income
+
+    def buy_option(self, cost, income=0):
+        if self.credits >= cost:
+            self.credits -= cost
+            self.income += income
+            return True
+        return False
+
 
     def subtract_life(self, amount=1):
         self.lives -= amount

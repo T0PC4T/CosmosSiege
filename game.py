@@ -52,8 +52,8 @@ class Game:
         self.attack_center_img = AttackCenterImg().get_image()
         self.basic_turret_img = BasicTurret().get_image()
         self.scoutship_img = ScoutShipImg().get_image()
-        self.red_ship = RedShipImg().get_image()
-
+        self.red_ship_img = RedShipImg().get_image()
+        self.blue_add_img = BlueAddImg().get_image()
         # FONTS
 
 
@@ -70,6 +70,8 @@ class Game:
 
     def update(self):
         # update portion of the game loop
+        credits, income = self.defence_center.get_global_info()
+        self.global_info = ["[C] {} ({})".format(credits, income)]
         self.all_sprites.update()
 
     def draw(self):

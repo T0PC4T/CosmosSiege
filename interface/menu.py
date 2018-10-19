@@ -16,15 +16,42 @@ class InGameMenu(pg.sprite.Sprite):
         self.load_menus()
 
     def load_menus(self):
-        self.menu_info = MenuUnitData(self.game)
+        self.unit_info = MenuUnitData(self.game)
+        self.global_info = GlobalInfo(self.game, (GLOBAL_INFO_X, GLOBAL_INFO_Y))
         self.ready_btn = ReadyButton(self.game)
 
+
     def set_focus(self, *args, **kwargs):
-        return self.menu_info.set_focus(*args, **kwargs)
+        return self.unit_info.set_focus(*args, **kwargs)
 
     def update(self):
         pass
 
+class GlobalInfo(pg.sprite.Sprite):
+
+    def __init__(self, game, pos):
+        self.game = game
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.pos = pos
+        self.image = pg.Surface((UNIT_INFO_WIDTH, UNIT_INFO_HEIGHT))
+        self.image.fill(GREY)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = pos
+        self.text_font = pg.font.Font(FONT_DIR, UNIT_INFO_TEXT_SIZE)
+
+    def update(self):
+        self.image = pg.Surface((UNIT_INFO_WIDTH, UNIT_INFO_HEIGHT))
+        self.image.fill(GREY)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = self.pos
+
+        i = 0
+        for value in self.game.global_info:
+            textsurface = self.text_font.render(value, False, FONT_COLOUR)
+            y = (TILE_SIZE*i) + TEXT_PADDING
+            self.image.blit(textsurface, (TEXT_PADDING, y))
+            i +=1
 
 class ReadyButton(pg.sprite.Sprite, ButtonBase):
 
@@ -41,7 +68,7 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
         self.image = pg.Surface((MENU_READY_WIDTH, MENU_READY_HEIGHT))
         self.image.fill(MENU_READY_COLOUR)
 
-        self.title_font = pg.font.Font(FONT_DIR, MENU_INFO_TITLE)
+        self.title_font = pg.font.Font(FONT_DIR, UNIT_INFO_TITLE)
 
         self.rect = self.image.get_rect()
         self.rect.x = MENU_READY_X
@@ -74,7 +101,7 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
         self.game = game
         self.i = i
 
-        self.null_image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
+        self.null_image = pg.Surface((UNIT_BTN_WIDTH, UNIT_BTN_HEIGHT))
         self.null_image.fill(DARK_GREY)
         self.set_unit_btn()
 
@@ -85,8 +112,9 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
         self.set_action(*func)
         self.image = image or self.null_image
         self.rect = self.image.get_rect()
-        self.rect.x = DATA_LIST_X
-        self.rect.y = DATA_LIST_Y + (self.i * DATA_RECORD_HEIGHT)
+        self.rect.x = UNIT_BTN_LIST_X
+        self.rect.y = UNIT_BTN_LIST_Y + (self.i * UNIT_BTN_HEIGHT)
+
 
 class MenuUnitData(pg.sprite.Sprite):
     def __init__(self, game):
@@ -94,7 +122,7 @@ class MenuUnitData(pg.sprite.Sprite):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
 
-        self.image = pg.Surface((MENU_INFO_WIDTH, (TITLE_STRIP_HEIGHT + MENU_INFO_HEIGHT + DATA_LIST_HEIGHT)))
+        self.image = pg.Surface((UNIT_INFO_WIDTH, (TITLE_STRIP_HEIGHT + UNIT_INFO_HEIGHT + UNIT_BTN_LIST_HEIGHT)))
         self.image.fill(DARK_GREY)
 
         self.set_clean_info()
@@ -105,8 +133,8 @@ class MenuUnitData(pg.sprite.Sprite):
 
         self.focus_cls = None
 
-        self.title_font = pg.font.Font(FONT_DIR, MENU_INFO_TITLE)
-        self.text_font = pg.font.Font(FONT_DIR, MENU_INFO_TEXT_SIZE)
+        self.title_font = pg.font.Font(FONT_DIR, UNIT_INFO_TITLE)
+        self.text_font = pg.font.Font(FONT_DIR, UNIT_INFO_TEXT_SIZE)
 
         # MENU BTNS
 
@@ -132,14 +160,9 @@ class MenuUnitData(pg.sprite.Sprite):
             self.set_info(self.focus_cls.get_info())
 
     def set_clean_unit(self):
-        title_image = pg.Surface((TITLE_STRIP_WIDTH, MENU_INFO_Y))
+        title_image = pg.Surface((TITLE_STRIP_WIDTH, UNIT_INFO_Y))
         title_image.fill(DARK_GREY)
         self.image.blit(title_image, (0, 0))
-
-    def set_clean_info(self):
-        info_image = pg.Surface((MENU_INFO_WIDTH, MENU_INFO_HEIGHT))
-        info_image.fill(GREY)
-        self.image.blit(info_image, (0, MENU_INFO_Y))
 
     def set_unit(self, title, img, unit_options):
         self.unit_options = unit_options
@@ -154,25 +177,29 @@ class MenuUnitData(pg.sprite.Sprite):
         for i, unit_btn in enumerate(self.unit_btns):
             if len(self.unit_options) > i + (self.page * UNIT_BTN_NUM):
                 unit_option = self.unit_options[i]
-                unit_option_canvas = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
+                unit_option_canvas = pg.Surface((UNIT_BTN_WIDTH, UNIT_BTN_HEIGHT))
                 unit_option_canvas.fill(DARK_GREY)
                 unit_option_image = unit_option[0][0]
-                unit_option_image = pg.transform.scale(unit_option_image, (DATA_RECORD_HEIGHT, DATA_RECORD_HEIGHT))
+                unit_option_image = pg.transform.scale(unit_option_image, (UNIT_BTN_HEIGHT, UNIT_BTN_HEIGHT))
                 unit_option_canvas.blit(unit_option_image, (0, 0))
                 unit_option_text = unit_option[0][1]
                 unit_option_text = self.text_font.render(unit_option_text, False, FONT_COLOUR)
-                unit_option_canvas.blit(unit_option_text, (DATA_RECORD_HEIGHT + TEXT_PADDING, TEXT_PADDING*2))
+                unit_option_canvas.blit(unit_option_text, (UNIT_BTN_HEIGHT + TEXT_PADDING, TEXT_PADDING*2))
                 unit_btn.set_unit_btn(unit_option_canvas, unit_option[1])
             else:
                 unit_btn.set_unit_btn()
 
+    def set_clean_info(self):
+        info_image = pg.Surface((UNIT_INFO_WIDTH, UNIT_INFO_HEIGHT))
+        info_image.fill(GREY)
+        self.image.blit(info_image, (0, UNIT_INFO_Y))
 
     def set_info(self, info_dict):
         i = 0
         for key, value in info_dict.items():
-            textsurface = self.text_font.render('{}: {}'.format(key, value), False, FONT_COLOUR)
-            y = MENU_INFO_Y + (TILE_SIZE)*i
-            self.image.blit(textsurface, (TEXT_PADDING, y))
+            text_surface = self.text_font.render('{}: {}'.format(key, value), False, FONT_COLOUR)
+            y = (UNIT_INFO_Y + (TILE_SIZE)*i) + TEXT_PADDING
+            self.image.blit(text_surface, (TEXT_PADDING, y))
             i +=1
 
     def next_page(self):
@@ -187,7 +214,7 @@ class MenuUnitData(pg.sprite.Sprite):
 
     def set_btns(self):
         unit_btns = list()
-        null_image = pg.Surface((DATA_RECORD_WIDTH, DATA_RECORD_HEIGHT))
+        null_image = pg.Surface((UNIT_BTN_WIDTH, UNIT_BTN_HEIGHT))
         null_image.fill(DARK_GREY)
 
         for i in range(UNIT_BTN_NUM):
