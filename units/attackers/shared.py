@@ -2,6 +2,8 @@ from settings import *
 import pygame as pg
 vec = pg.math.Vector2
 from ..shared import Unit
+import math
+
 
 class Attacker(Unit):
     def __init__(self, game, speed, hp, src_img, destroy_lives=1):
@@ -25,6 +27,7 @@ class Attacker(Unit):
         self.moving_pos_index = 0
         self.moving = False
         self.rotation = 0
+        self.target_rot = 0
         self.velocity = vec(0, 0)
         self.can_shoot = True
         # Affects
@@ -73,8 +76,21 @@ class Attacker(Unit):
     def affects_update(self):
         pass
 
+    def get_gradual_rotation(self):
+        b = self.target_rot - self.rotation
+        if b*b < 25:
+            self.rotation = self.target_rot
+        else:
+            if self.target_rot > self.rotation:
+                self.rotation += 5
+            else:
+                self.rotation -= 5
+
+        return self.rotation
+
     def attacker_update(self):
         self.btn_update()
+        self.image = pg.transform.rotate(self.src_img, self.get_gradual_rotation())
         if not self.moving:
             self.moving = True
             if self.moving_pos_index == len(self.path):
@@ -82,10 +98,9 @@ class Attacker(Unit):
                 self.die()
             else:
                 self.target = vec(self.path[self.moving_pos_index])*TILE_SIZE
-                self.rotation = (self.target - self.pos).angle_to(vec(1, 0))
-                self.image = pg.transform.rotate(self.src_img, self.rotation)
+                self.target_rot = (self.target - self.pos).angle_to(vec(1, 0))
         else:
-            self.velocity = vec(self.speed, 0).rotate(-self.rotation)
+            self.velocity = vec(self.speed, 0).rotate(-self.target_rot)
             self.pos = self.pos + self.velocity
 
             if (self.pos - self.target).length() <= self.speed:

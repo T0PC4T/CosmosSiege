@@ -14,6 +14,8 @@ class Defence(Unit):
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
         self.pos = vec(pos)
+        self.price = getattr(self, "price", 0)
+        self.sell_value = getattr(self, "price", 0)
         self.min_range = min_range
         self.max_range = max_range
         self.projectile = projectile
@@ -28,6 +30,9 @@ class Defence(Unit):
     def get_type():
         return "defence"
 
+    def get_price(self):
+        return getattr(self, "price", 0)
+
     def get_range(self):
         if self.max_range > TILE_SIZE*7:
             return "LONG"
@@ -35,9 +40,10 @@ class Defence(Unit):
             return "SHORT"
 
     def get_info(self):
-        return {"DMG": self.projectile_damage,
-                "RATE": self.fire_rate,
-                "RNG": self.get_range()}
+        return {"Dmg": self.projectile_damage,
+                "Rate": self.fire_rate,
+                "Rng": self.get_range(),
+                "Value": self.sell_value}
 
 
     def vec_in_range(self, d):

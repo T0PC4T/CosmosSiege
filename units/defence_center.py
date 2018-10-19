@@ -5,7 +5,6 @@ from random import randint
 vec = pg.math.Vector2
 from .shared import Unit
 
-
 class DefenceCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
         self.groups = game.all_sprites
@@ -36,7 +35,7 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         # Defence Center variables
 
         self.lives = 100
-        self.credits = 200
+        self.credits = 300
         self.income = 10
         self.building = False
         self.defences = Defenders(self.game)
@@ -130,8 +129,10 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
                     ways = self.game.attack_center.generate_paths(self.game.grid)
                     round_active = self.game.attack_center.round_active()
                     if ways and not round_active:
-                        self.game.grid[tile_y][tile_x] = self.defences.add_defence(self.defence_cls(self.game, vec(tile_x, tile_y) * TILE_SIZE))
-                        # self.not_building()
+                        if self.buy_option(self.defence_cls.get_price(self.defence_cls)):
+                            defence_init = self.defence_cls(self.game, vec(tile_x, tile_y) * TILE_SIZE)
+                            self.game.grid[tile_y][tile_x] = self.defences.add_defence(defence_init)
+                            self.not_building()
                     else:
                         self.game.grid[tile_y][tile_x] = None
 
