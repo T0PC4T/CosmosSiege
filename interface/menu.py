@@ -4,7 +4,7 @@ from .buttons import ButtonBase
 
 class InGameMenu(pg.sprite.Sprite):
     def __init__(self, game):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.menu_items
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((MENU_WIDTH, HEIGHT))
@@ -31,7 +31,7 @@ class GlobalInfo(pg.sprite.Sprite):
 
     def __init__(self, game, pos):
         self.game = game
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.menu_items
         pg.sprite.Sprite.__init__(self, self.groups)
         self.pos = pos
         self.image = pg.Surface((UNIT_INFO_WIDTH, UNIT_INFO_HEIGHT))
@@ -53,13 +53,14 @@ class GlobalInfo(pg.sprite.Sprite):
             self.image.blit(textsurface, (TEXT_PADDING, y))
             i +=1
 
+
 class ReadyButton(pg.sprite.Sprite, ButtonBase):
 
     def __init__(self, game):
 
         # Sprite base
 
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.menu_items
         pg.sprite.Sprite.__init__(self, self.groups)
         ButtonBase.__init__(self)
 
@@ -94,7 +95,7 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
 
         # Sprite base
 
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.menu_items
         pg.sprite.Sprite.__init__(self, self.groups)
         ButtonBase.__init__(self)
 
@@ -119,7 +120,7 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
 class MenuUnitData(pg.sprite.Sprite):
     def __init__(self, game):
         self.game = game
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.menu_items
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.image = pg.Surface((UNIT_INFO_WIDTH, (TITLE_STRIP_HEIGHT + UNIT_INFO_HEIGHT + UNIT_BTN_LIST_HEIGHT)))
@@ -135,6 +136,7 @@ class MenuUnitData(pg.sprite.Sprite):
 
         self.title_font = pg.font.Font(FONT_DIR, UNIT_INFO_TITLE)
         self.text_font = pg.font.Font(FONT_DIR, UNIT_INFO_TEXT_SIZE)
+        self.unit_text_font = pg.font.Font(FONT_DIR, UNIT_BTNS_TEXT_SIZE)
 
         # MENU BTNS
 
@@ -183,8 +185,8 @@ class MenuUnitData(pg.sprite.Sprite):
                 unit_option_image = pg.transform.scale(unit_option_image, (UNIT_BTN_HEIGHT, UNIT_BTN_HEIGHT))
                 unit_option_canvas.blit(unit_option_image, (0, 0))
                 unit_option_text = unit_option[0][1]
-                unit_option_text = self.text_font.render(unit_option_text, False, FONT_COLOUR)
-                unit_option_canvas.blit(unit_option_text, (UNIT_BTN_HEIGHT + TEXT_PADDING, TEXT_PADDING*2))
+                unit_option_text = self.unit_text_font.render(unit_option_text, False, FONT_COLOUR)
+                unit_option_canvas.blit(unit_option_text, (UNIT_BTN_HEIGHT + TEXT_PADDING, TEXT_PADDING*3))
                 unit_btn.set_unit_btn(unit_option_canvas, unit_option[1])
             else:
                 unit_btn.set_unit_btn()
@@ -236,7 +238,7 @@ class MenuUnitData(pg.sprite.Sprite):
 class PageButton(ButtonBase, pg.sprite.Sprite):
     def __init__(self, game, menu, prev):
         ButtonBase.__init__(self)
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.menu_items
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.game = game

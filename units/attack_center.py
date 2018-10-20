@@ -6,7 +6,7 @@ from .attackers import *
 
 class AttackCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.structures
         pg.sprite.Sprite.__init__(self, self.groups)
         Unit.__init__(self, game)
 
@@ -23,7 +23,11 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         # Restrict grid
 
         self.game.grid[self.tile_y][self.tile_x] = self
-        self.game.grid[self.tile_y+1][self.tile_x] = self
+        self.game.grid[self.tile_y][self.tile_x+1] = False
+        self.game.grid[self.tile_y+1][self.tile_x] = False
+        self.game.grid[self.tile_y+1][self.tile_x+1] = False
+        self.game.grid[self.tile_y-1][self.tile_x] = False
+        self.game.grid[self.tile_y-1][self.tile_x+1] = False
 
         # Attack Center variables
 
@@ -46,14 +50,15 @@ class AttackCenter(Unit, pg.sprite.Sprite):
                 "ships": self.attackers.num()}
 
     def get_options(self):
-        return [[[self.game.scoutship_img, "Flee Ship"], [self.game.attack_center.attack, ScoutShip]],
-                [[self.game.red_ship_img, "Red Ship"], [self.game.attack_center.attack, RedShip]]]
+        return [[[self.game.scoutship_img, ScoutShip.get_title(ScoutShip)], [self.game.attack_center.attack, ScoutShip]],
+                [[self.game.red_ship_img, RedShip.get_title(RedShip)], [self.game.attack_center.attack, RedShip]]]
 
     def round_active(self):
         return self.attackers.round_active
 
     def attack(self, unit_cls):
-        self.attackers.add_attacker(unit_cls)
+        if self.game.defence_center.buy_option(unit_cls.get_price(unit_cls), unit_cls.get_income(unit_cls)):
+            self.attackers.add_attacker(unit_cls)
 
     def get_path(self):
         return choice(self.paths)
@@ -115,6 +120,7 @@ class PathFinder():
                 [self.current_position[0]-1, self.current_position[1]],
                 [self.current_position[0], self.current_position[1]+1],
                 [self.current_position[0], self.current_position[1]-1]]
+
         shuffle(ways)
         return ways
 
@@ -132,7 +138,7 @@ class PathFinder():
             if b:
                 continue
 
-            if self._get_grid_cell(way) is None or self._get_grid_cell(way) is self.game.defence_center:
+            if not self._get_grid_cell(way) or self._get_grid_cell(way) is self.game.defence_center:
                 possible_ways.append(way)
 
         return possible_ways
@@ -170,6 +176,7 @@ class PathFinder():
     def get_path(self):
         return self.path
 
+
 class Attackers():
     def __init__(self, game):
         self.game = game
@@ -192,6 +199,7 @@ class Attackers():
             self.round_active = True
 
     def end_round(self):
+        self.game.defence_center.end_round()
         self.round_active = False
 
     def spawn_attacker(self):
@@ -203,7 +211,6 @@ class Attackers():
     def i_died(self, unit_inst):
         self.attacker_count -= 1
 
-
     def update(self):
         if self.round_active:
             if self.spawn_i > 0:
@@ -212,5 +219,5 @@ class Attackers():
                 self.spawn_attacker()
                 self.spawn_i = self.spawn_interval
 
-        if self.attacker_count <= 0:
+        if self.attacker_count <= 0 and self.round_active:
             self.end_round()

@@ -30,9 +30,6 @@ class Defence(Unit):
     def get_type():
         return "defence"
 
-    def get_price(self):
-        return getattr(self, "price", 0)
-
     def get_range(self):
         if self.max_range > TILE_SIZE*7:
             return "LONG"
@@ -45,6 +42,9 @@ class Defence(Unit):
                 "Rng": self.get_range(),
                 "Value": self.sell_value}
 
+    def get_projectile_pos(self):
+        offset = TILE_SIZE // 2
+        return self.pos + vec(offset, offset)
 
     def vec_in_range(self, d):
         return d > self.min_range and d < self.max_range
@@ -77,7 +77,7 @@ class Defence(Unit):
             self.shoot()
 
     def shoot(self):
-        self.projectile(self.game, self.pos, self.target,
+        self.projectile(self.game, self.get_projectile_pos(), self.target,
                         self.projectile_speed, self.projectile_duration, self.projectile_damage)
         self.next_shot = self.fire_rate
 

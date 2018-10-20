@@ -7,7 +7,7 @@ from .shared import Unit
 
 class DefenceCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.structures
         pg.sprite.Sprite.__init__(self, self.groups)
         Unit.__init__(self, game)
 
@@ -57,7 +57,7 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
                 }
 
     def get_options(self):
-        return [[[self.game.basic_turret_img, "Beam Turret"], [self.game.defence_center.build, BasicTurret]]]
+        return [[[self.game.basic_turret_img, "Beam ({})".format(BasicTurret.get_price(BasicTurret))], [self.game.defence_center.build, BasicTurret]]]
 
     def get_global_info(self):
         return self.credits, self.income
@@ -69,6 +69,8 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
             return True
         return False
 
+    def end_round(self):
+        self.credits += int(self.income)
 
     def subtract_life(self, amount=1):
         self.lives -= amount
@@ -124,15 +126,14 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
             clean_x, clean_y = self.get_blueprint_pos()
             tile_x, tile_y = clean_x//TILE_SIZE, clean_y//TILE_SIZE
             if tile_x < ARENA_TILE_WIDTH and tile_y < ARENA_TILE_HEIGHT:
-                if not self.game.grid[tile_y][tile_x]:
+                if self.game.grid[tile_y][tile_x] is None:
                     self.game.grid[tile_y][tile_x] = True
                     ways = self.game.attack_center.generate_paths(self.game.grid)
                     round_active = self.game.attack_center.round_active()
-                    if ways and not round_active:
-                        if self.buy_option(self.defence_cls.get_price(self.defence_cls)):
-                            defence_init = self.defence_cls(self.game, vec(tile_x, tile_y) * TILE_SIZE)
-                            self.game.grid[tile_y][tile_x] = self.defences.add_defence(defence_init)
-                            self.not_building()
+                    if ways and not round_active and self.buy_option(self.defence_cls.get_price(self.defence_cls)):
+                        defence_init = self.defence_cls(self.game, vec(tile_x, tile_y) * TILE_SIZE)
+                        self.game.grid[tile_y][tile_x] = self.defences.add_defence(defence_init)
+                        self.not_building()
                     else:
                         self.game.grid[tile_y][tile_x] = None
 

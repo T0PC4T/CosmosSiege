@@ -6,12 +6,9 @@ from random import randint
 
 
 class Game:
-    def __init__(self):
-        pg.init()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
-        pg.display.set_caption(TITLE)
-        pg.font.init()
-        self.clock = pg.time.Clock()
+    def __init__(self, screen, clock):
+        self.screen = screen
+        self.clock = clock
         self.playing = True
         self.assets = list()
         self.load_assets()
@@ -22,9 +19,11 @@ class Game:
         # Sprites
 
         self.all_sprites = pg.sprite.Group()
+        self.structures = pg.sprite.Group()
         self.defences = pg.sprite.Group()
         self.attackers = pg.sprite.Group()
         self.projectiles = pg.sprite.Group()
+        self.menu_items = pg.sprite.Group()
         self.menu = InGameMenu(self)
         self.defence_center = DefenceCenter(self)
         self.attack_center = AttackCenter(self)
@@ -70,14 +69,17 @@ class Game:
 
     def update(self):
         # update portion of the game loop
-        credits, income = self.defence_center.get_global_info()
-        self.global_info = ["[C] {} ({})".format(credits, income)]
+        self.global_info = ["[C] {} ({})".format(*self.defence_center.get_global_info())]
         self.all_sprites.update()
 
     def draw(self):
         pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
         self.screen.blit(self.background_image, (0, 0))
-        self.all_sprites.draw(self.screen)
+        self.projectiles.draw(self.screen)
+        self.structures.draw(self.screen)
+        self.defences.draw(self.screen)
+        self.attackers.draw(self.screen)
+        self.menu_items.draw(self.screen)
         self.defence_center.draw_effects()
         pg.display.flip()
 

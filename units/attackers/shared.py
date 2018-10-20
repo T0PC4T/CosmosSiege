@@ -52,6 +52,9 @@ class Attacker(Unit):
     def get_pos(self):
         return vec(self.pos)
 
+    def get_title(self):
+        return "{} {}({})".format(self.name, self.price, self.income)
+
     def subtract_hp(self, amount):
         self.hp -= amount
         if self.hp <= 0:

@@ -11,7 +11,6 @@ class Unit(ButtonBase):
         self.game = game
         self.set_action(self.game.menu.set_focus, self)
 
-
     def get_options(self):
         return list()
 
@@ -23,3 +22,9 @@ class Unit(ButtonBase):
 
     def get_info(self):
         return {"N/A": "N/A"}
+
+    def get_price(self):
+        return getattr(self, "price", 0)
+
+    def get_income(self):
+        return getattr(self, "income", 0)
