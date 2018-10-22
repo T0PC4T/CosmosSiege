@@ -4,11 +4,12 @@ vec = pg.math.Vector2
 import random
 from ..shared import Unit
 
-class Defence(Unit):
 
-    def __init__(self, game, src_img, pos, min_range, max_range, fire_rate,
-                 projectile, projectile_speed, projectile_duration, projectile_damage):
+class Structure(Unit, pg.sprite.Sprite):
+    def __init__(self, game, src_img, pos):
         Unit.__init__(self, game)
+        self.groups = game.all_sprites, game.defences
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.src_img = src_img
         self.image = src_img
         self.rect = self.image.get_rect()
@@ -16,6 +17,34 @@ class Defence(Unit):
         self.pos = vec(pos)
         self.price = getattr(self, "price", 0)
         self.sell_value = getattr(self, "price", 0)
+
+    @staticmethod
+    def get_type():
+        return "defence"
+
+    def die(self):
+        self.kill()
+
+    def get_info(self):
+        return {"Value": self.sell_value}
+
+    def _get_options(self):
+        return [[[self.game.blue_add_img, "Sell"], [self.game.defence_center.sell_structure, self]]]
+
+    def get_sell_value(self):
+        return getattr(self, "sell_value", 0)
+
+    def defence_update(self):
+        self.btn_update()
+
+    def update(self):
+        self.defence_update()
+
+class Defence(Structure):
+
+    def __init__(self, game, src_img, pos, min_range, max_range, fire_rate,
+                 projectile, projectile_speed, projectile_duration, projectile_damage):
+        Structure.__init__(self, game, src_img, pos)
         self.min_range = min_range
         self.max_range = max_range
         self.projectile = projectile
@@ -25,10 +54,6 @@ class Defence(Unit):
         self.target = None
         self.fire_rate = fire_rate
         self.next_shot = 0
-
-    @staticmethod
-    def get_type():
-        return "defence"
 
     def get_range(self):
         if self.max_range > TILE_SIZE*7:
@@ -81,8 +106,7 @@ class Defence(Unit):
                         self.projectile_speed, self.projectile_duration, self.projectile_damage)
         self.next_shot = self.fire_rate
 
-    def update(self):
-        self.defence_update()
+
 
 
 class Projectile():

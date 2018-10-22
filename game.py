@@ -27,7 +27,8 @@ class Game:
         self.menu = InGameMenu(self)
         self.defence_center = DefenceCenter(self)
         self.attack_center = AttackCenter(self)
-        self.menu.set_focus(Unit(self))
+        self.null_focus = Unit(self)
+        self.menu.set_focus(self.null_focus)
         ###########################################################
         # CIRCLE REFERENCE #
         ###########################################################
@@ -49,6 +50,7 @@ class Game:
         self.page_btn_img = PageBtnImg().get_image()
         self.defence_center_img = DefenceCenterImg().get_image()
         self.attack_center_img = AttackCenterImg().get_image()
+        self.barracade_img = BarracadeImg().get_image()
         self.basic_turret_img = BasicTurret().get_image()
         self.scoutship_img = ScoutShipImg().get_image()
         self.red_ship_img = RedShipImg().get_image()
@@ -91,3 +93,4 @@ class Game:
 
         if pg.mouse.get_pressed()[2]:
             self.defence_center.not_building()
+            self.menu.set_focus(self.null_focus)

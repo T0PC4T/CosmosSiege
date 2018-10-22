@@ -3,6 +3,7 @@ from interface.menu import *
 BLOCKS = [1, 1]
 
 LOAD_DATA = None
+
 if LOAD_DATA:
     BLOCKS = [len(LOAD_DATA[0])//TILE_SIZE, len(LOAD_DATA)//TILE_SIZE]
 
@@ -103,8 +104,8 @@ class CharacterEditor:
     def draw(self):
         pg.display.set_caption("{}".format([int(i) for i in self.drawing_colour]))
         self.screen.fill(BLACK)
-        self.draw_grid()
         self.all_sprites.draw(self.screen)
+        self.draw_grid()
         pg.display.flip()
 
     def set_drawing_colour(self, colour):

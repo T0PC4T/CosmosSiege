@@ -4,7 +4,7 @@ from .shared import Defence, Projectile
 from ..shared import Unit
 
 
-class BasicTurret(Defence, pg.sprite.Sprite):
+class BasicTurret(Defence):
     price = 20
 
     def __init__(self, game, pos):
@@ -18,8 +18,6 @@ class BasicTurret(Defence, pg.sprite.Sprite):
                          projectile_speed=5,
                          projectile_duration=FPS*7,
                          projectile_damage=5)
-        self.groups = game.all_sprites, game.defences
-        pg.sprite.Sprite.__init__(self, self.groups)
 
         # Defence Center variables
 
@@ -31,7 +29,7 @@ class BasicTurret(Defence, pg.sprite.Sprite):
         return "Basic Turret"
 
     def get_options(self):
-        return [[[self.game.blue_add_img, "Fire rate"], [self.upgrade_fire_rate]]]
+        return self._get_options() + [[[self.game.blue_add_img, "Fire rate"], [self.upgrade_fire_rate]]]
 
     def update(self):
         self.defence_update()

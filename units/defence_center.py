@@ -57,7 +57,8 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
                 }
 
     def get_options(self):
-        return [[[self.game.basic_turret_img, "Beam ({})".format(BasicTurret.get_price(BasicTurret))], [self.game.defence_center.build, BasicTurret]]]
+        return [[[self.game.barracade_img, "Barricade ({})".format(Barricade.get_price(Barricade))], [self.game.defence_center.build, Barricade]],
+                [[self.game.basic_turret_img, "Beam ({})".format(BasicTurret.get_price(BasicTurret))], [self.game.defence_center.build, BasicTurret]]]
 
     def get_global_info(self):
         return self.credits, self.income
@@ -68,6 +69,16 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
             self.income += income
             return True
         return False
+
+    def sell_structure(self, defence_cls):
+        self.add_credits(defence_cls.get_sell_value())
+        x, y = defence_cls.get_tile_x_tile_y()
+        self.game.grid[y][x] = None
+        defence_cls.die()
+
+    def add_credits(self, credits, income=0):
+        self.credits += credits
+        self.income += income
 
     def end_round(self):
         self.credits += int(self.income)

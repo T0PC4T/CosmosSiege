@@ -14,7 +14,7 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         self.image = game.attack_center_img
         self.rect = self.image.get_rect()
 
-        random_y = randint(0, ARENA_HEIGHT - TILE_SIZE)
+        random_y = randint(TILE_SIZE, ARENA_HEIGHT - TILE_SIZE*2)
         self.tile_y = (random_y - (random_y % TILE_SIZE)) // TILE_SIZE
         self.tile_x = 0
         self.rect.x = self.tile_x * TILE_SIZE

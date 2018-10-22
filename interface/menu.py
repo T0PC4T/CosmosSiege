@@ -2,6 +2,7 @@ import pygame as pg
 from settings import *
 from .buttons import ButtonBase
 
+
 class InGameMenu(pg.sprite.Sprite):
     def __init__(self, game):
         self.groups = game.all_sprites, game.menu_items
@@ -26,6 +27,7 @@ class InGameMenu(pg.sprite.Sprite):
 
     def update(self):
         pass
+
 
 class GlobalInfo(pg.sprite.Sprite):
 
@@ -87,7 +89,6 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
             self.image.fill(MENU_READY_COLOUR)
             text_surface = self.title_font.render("Ready", False, WHITE)
             self.image.blit(text_surface, (TILE_SIZE*1.5, TEXT_PADDING*3))
-
 
 
 class UnitButton(pg.sprite.Sprite, ButtonBase):
