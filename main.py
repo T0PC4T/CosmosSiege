@@ -1,5 +1,5 @@
 from game import Game
-from pregame import PreGame
+# from pregame import PreGame
 import pygame as pg
 from settings import *
 

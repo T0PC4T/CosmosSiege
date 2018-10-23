@@ -6,7 +6,7 @@ from random import randint
 
 
 class Game:
-    def __init__(self, screen, clock, socket):
+    def __init__(self, screen, clock, server_connection=None):
         self.screen = screen
         self.clock = clock
         self.playing = True
@@ -45,23 +45,6 @@ class Game:
             pos_y = randint(TILE_SIZE, ARENA_WIDTH-TILE_SIZE)
             size = randint(1, 3)
             pg.draw.circle(self.background_image, WHITE, (pos_x, pos_y), size)
-
-        # Other assets
-        self.page_btn_img = PageBtnImg().get_image()
-        self.defence_center_img = DefenceCenterImg().get_image()
-        self.attack_center_img = AttackCenterImg().get_image()
-
-        # OPTIONS
-        self.blue_add_img = BlueAddImg().get_image()
-
-        #
-        self.barracade_img = BarracadeImg().get_image()
-        self.basic_turret_img = BasicTurret().get_image()
-
-        # SHIPS
-        self.scoutship_img = ScoutShipImg().get_image()
-        self.red_ship_img = RedShipImg().get_image()
-        self.flee_ship_img = FleeShipImg().get_image()
 
         # FONTS
 

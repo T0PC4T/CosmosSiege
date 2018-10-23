@@ -4,6 +4,7 @@ from .defences import *
 from random import randint
 vec = pg.math.Vector2
 from .shared import Unit
+from assets import Images
 
 class DefenceCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
@@ -57,8 +58,8 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
                 }
 
     def get_options(self):
-        return [[[self.game.barracade_img, "Barricade ({})".format(Barricade.get_price(Barricade))], [self.game.defence_center.build, Barricade]],
-                [[self.game.basic_turret_img, "Beam ({})".format(BasicTurret.get_price(BasicTurret))], [self.game.defence_center.build, BasicTurret]]]
+        return [[[Images.barracade_img, "Barricade ({})".format(Barricade.get_price(Barricade))], [self.game.defence_center.build, Barricade]],
+                [[Images.basic_turret_img, "Beam ({})".format(BasicTurret.get_price(BasicTurret))], [self.game.defence_center.build, BasicTurret]]]
 
     def get_global_info(self):
         return self.credits, self.income

@@ -3,7 +3,7 @@ import pygame as pg
 vec = pg.math.Vector2
 import random
 from ..shared import Unit
-
+from assets import Images
 
 class Structure(Unit, pg.sprite.Sprite):
     def __init__(self, game, src_img, pos):
@@ -29,7 +29,7 @@ class Structure(Unit, pg.sprite.Sprite):
         return {"Value": self.sell_value}
 
     def _get_options(self):
-        return [[[self.game.blue_add_img, "Sell"], [self.game.defence_center.sell_structure, self]]]
+        return [[[Images.blue_add_img, "Sell"], [self.game.defence_center.sell_structure, self]]]
 
     def get_sell_value(self):
         return getattr(self, "sell_value", 0)

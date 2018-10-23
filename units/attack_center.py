@@ -3,15 +3,15 @@ from settings import *
 from random import randint, choice, shuffle
 from .shared import Unit
 from .attackers import *
-
+from assets import Images
 class AttackCenter(Unit, pg.sprite.Sprite):
     def __init__(self, game):
         self.groups = game.all_sprites, game.structures
         pg.sprite.Sprite.__init__(self, self.groups)
         Unit.__init__(self, game)
 
-        self.src_img = game.attack_center_img
-        self.image = game.attack_center_img
+        self.src_img = Images.attack_center_img
+        self.image = Images.attack_center_img
         self.rect = self.image.get_rect()
 
         random_y = randint(TILE_SIZE, ARENA_HEIGHT - TILE_SIZE*2)
