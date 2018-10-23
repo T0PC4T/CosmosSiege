@@ -5,10 +5,11 @@ from ..shared import Unit
 import math
 
 
-class Attacker(Unit):
-    def __init__(self, game, speed, hp, src_img, destroy_lives=1):
+class Attacker(Unit, pg.sprite.Sprite):
+    def __init__(self, game, src_img, destroy_lives=1):
         Unit.__init__(self, game)
         self.groups = game.all_sprites, game.attackers
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.src_img = src_img
         self.image = src_img
         self.rect = self.image.get_rect()
@@ -16,10 +17,10 @@ class Attacker(Unit):
         self.rect.y = self.game.attack_center.rect.y
         self.hit_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE // 2, TILE_SIZE // 2)
 
-        self.speed = speed
-
-        self.max_hp = hp
-        self.hp = hp
+        self.original_speed = self.speed
+        self.speed = self.speed
+        self.max_hp = self.hp
+        self.hp = self.hp
 
         self.destroy_lives = destroy_lives
         self.pos = vec(self.game.attack_center.rect.x, self.game.attack_center.rect.y)

@@ -4,6 +4,8 @@ BLOCKS = [1, 1]
 
 LOAD_DATA = None
 
+
+
 if LOAD_DATA:
     BLOCKS = [len(LOAD_DATA[0])//TILE_SIZE, len(LOAD_DATA)//TILE_SIZE]
 
@@ -119,8 +121,6 @@ class CharacterEditor:
 
     def update(self):
         # update portion of the game loop
-        if self.amount > 1:
-            self.amount -= 0.01
         if not self.bg_colouring:
             self.paint_colour_btn.set_colour(self.drawing_colour)
         self.all_sprites.update()
@@ -160,6 +160,9 @@ class CharacterEditor:
             if tile_index_x < len(self.data[0]) and tile_index_y < len(self.data):
                 dc = BGCOLOUR if self.bg_colouring else self.drawing_colour
                 self.data[tile_index_y][tile_index_x] = ColourCube(self, tile_x, tile_y, dc)
+
+        if not pg.mouse.get_pressed()[0]:
+            self.amount = 1.5
 
 
 

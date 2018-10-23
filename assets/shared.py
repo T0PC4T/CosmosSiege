@@ -8,6 +8,7 @@ class ImageBuilder(object):
     row_pixels = 20
     col_pixels = 20
     data = [[]]
+    canvas = None
 
     def get_data(self):
         data = self.data
@@ -16,7 +17,7 @@ class ImageBuilder(object):
     def get_pixels(self):
         return len(self.data[0])
 
-    def get_image(self):
+    def __init__(self):
         self.canvas = pg.Surface((self.width, self.height))
         self.canvas.fill(BGCOLOUR)
 
@@ -32,4 +33,5 @@ class ImageBuilder(object):
 
         self.canvas.set_colorkey(BGCOLOUR)
 
+    def get_image(self):
         return self.canvas

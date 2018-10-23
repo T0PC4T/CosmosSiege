@@ -50,8 +50,10 @@ class AttackCenter(Unit, pg.sprite.Sprite):
                 "ships": self.attackers.num()}
 
     def get_options(self):
-        return [[[self.game.scoutship_img, ScoutShip.get_title(ScoutShip)], [self.game.attack_center.attack, ScoutShip]],
-                [[self.game.red_ship_img, RedShip.get_title(RedShip)], [self.game.attack_center.attack, RedShip]]]
+        return [[[ScoutShip.get_img(ScoutShip), ScoutShip.get_title(ScoutShip)], [self.game.attack_center.attack, ScoutShip]],
+                [[RedShip.get_img(RedShip), RedShip.get_title(RedShip)], [self.game.attack_center.attack, RedShip]],
+                [[FleeShip.get_img(FleeShip), FleeShip.get_title(FleeShip)], [self.game.attack_center.attack, FleeShip]],
+                [[CargoShip.get_img(CargoShip), CargoShip.get_title(CargoShip)], [self.game.attack_center.attack, CargoShip]]]
 
     def round_active(self):
         return self.attackers.round_active
