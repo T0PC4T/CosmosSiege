@@ -9,7 +9,7 @@ class BasicTurret(Defence):
 
     def __init__(self, game, pos):
         Defence.__init__(self, game=game,
-                         src_img=game.basic_turret_img,
+                         src_img=Images.basic_turret_img,
                          pos=pos,
                          min_range=TILE_SIZE*4,
                          max_range=TILE_SIZE*24,

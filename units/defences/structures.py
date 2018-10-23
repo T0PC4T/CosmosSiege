@@ -5,7 +5,7 @@ from ..shared import Unit
 from assets import Images
 
 class Barricade(Structure):
-    price = 5
+    price = 1
     def __init__(self, game, pos):
         Structure.__init__(self, game, Images.barracade_img, pos)
         self.groups = game.all_sprites, game.defences
