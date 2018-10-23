@@ -2,7 +2,7 @@ import pygame as pg
 from settings import *
 from .shared import Defence, Projectile
 from ..shared import Unit
-
+from assets import Images
 
 class BasicTurret(Defence):
     price = 20
@@ -29,7 +29,7 @@ class BasicTurret(Defence):
         return "Basic Turret"
 
     def get_options(self):
-        return self._get_options() + [[[self.game.blue_add_img, "Fire rate"], [self.upgrade_fire_rate]]]
+        return self._get_options() + [[[Images.blue_add_img, "Fire rate"], [self.upgrade_fire_rate]]]
 
     def update(self):
         self.defence_update()

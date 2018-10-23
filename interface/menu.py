@@ -1,6 +1,7 @@
 import pygame as pg
 from settings import *
 from .buttons import ButtonBase
+from assets import Images
 
 
 class InGameMenu(pg.sprite.Sprite):
@@ -246,9 +247,9 @@ class PageButton(ButtonBase, pg.sprite.Sprite):
         self.menu = menu
 
         if prev:
-            self.image = pg.transform.flip(self.game.page_btn_img, True, False)
+            self.image = pg.transform.flip(Images.page_btn_img, True, False)
         else:
-            self.image = self.game.page_btn_img
+            self.image = Images.page_btn_img
 
         self.rect = self.image.get_rect()
         if prev:

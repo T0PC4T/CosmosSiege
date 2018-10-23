@@ -1,5 +1,22 @@
 import pygame as pg
 from settings import *
+from random import randint
+
+class ImageAssets():
+    def __init__(self):
+        self.background_image = pg.Surface((ARENA_WIDTH, ARENA_HEIGHT))
+        self.background_image.fill(BGCOLOUR)
+
+        for i in range(70):
+            pos_x = randint(TILE_SIZE, ARENA_WIDTH-TILE_SIZE)
+            pos_y = randint(TILE_SIZE, ARENA_WIDTH-TILE_SIZE)
+            size = randint(1, 3)
+            pg.draw.circle(self.background_image, WHITE, (pos_x, pos_y), size)
+
+
+
+    def add_image(self, name, cls):
+        setattr(self, name, cls().get_image())
 
 
 class ImageBuilder(object):

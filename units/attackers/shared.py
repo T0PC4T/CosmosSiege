@@ -6,12 +6,11 @@ import math
 
 
 class Attacker(Unit, pg.sprite.Sprite):
-    def __init__(self, game, src_img, destroy_lives=1):
+    def __init__(self, game, destroy_lives=1):
         Unit.__init__(self, game)
         self.groups = game.all_sprites, game.attackers
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.src_img = src_img
-        self.image = src_img
+        self.image = self.src_img
         self.rect = self.image.get_rect()
         self.rect.x = self.game.attack_center.rect.x
         self.rect.y = self.game.attack_center.rect.y
