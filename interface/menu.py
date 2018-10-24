@@ -93,7 +93,7 @@ class ReadyButton(pg.sprite.Sprite, ButtonBase):
 
 
 class UnitButton(pg.sprite.Sprite, ButtonBase):
-    def __init__(self, game, i):
+    def __init__(self, game, menu, i):
 
         # Sprite base
 
@@ -102,6 +102,7 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
         ButtonBase.__init__(self)
 
         self.game = game
+        self.menu = menu
         self.i = i
 
         self.null_image = pg.Surface((UNIT_BTN_WIDTH, UNIT_BTN_HEIGHT))
@@ -110,6 +111,10 @@ class UnitButton(pg.sprite.Sprite, ButtonBase):
 
     def update(self):
         self.btn_update()
+
+    def run_action(self):
+        ButtonBase.run_action(self)
+        self.menu.reset_focus()
 
     def set_unit_btn(self, image=None, func=(lambda:None,)):
         self.set_action(*func)
@@ -146,7 +151,7 @@ class MenuUnitData(pg.sprite.Sprite):
         self.unit_options = list()
 
         for i in range(UNIT_BTN_NUM):
-            self.unit_btns.append(UnitButton(self.game, i))
+            self.unit_btns.append(UnitButton(self.game, self, i))
 
         self.prev_page_btn = PageButton(self.game, self, True)
         self.next_page_btn = PageButton(self.game, self, False)
@@ -154,8 +159,12 @@ class MenuUnitData(pg.sprite.Sprite):
         self.page = 0
         self.units = list()
 
-    def set_focus(self, focus_cls):
+    def reset_focus(self):
+        self.set_focus(self.focus_cls, self.page)
+
+    def set_focus(self, focus_cls, p=0):
         self.focus_cls = focus_cls
+        self.page = p
         self.set_unit(focus_cls.get_title(), focus_cls.get_img(), focus_cls.get_options())
 
     def update_focus(self):
@@ -175,12 +184,13 @@ class MenuUnitData(pg.sprite.Sprite):
         self.image.blit(scaled_img, (TEXT_PADDING, TITLE_STRIP_HEIGHT+TEXT_PADDING))
         text_surface = self.title_font.render(title, False, FONT_COLOUR)
         self.image.blit(text_surface, (TEXT_PADDING, TEXT_PADDING))
-
+        self.set_unit_options()
         # Unit Btns
 
+    def set_unit_options(self):
         for i, unit_btn in enumerate(self.unit_btns):
             if len(self.unit_options) > i + (self.page * UNIT_BTN_NUM):
-                unit_option = self.unit_options[i]
+                unit_option = self.unit_options[i + self.page * UNIT_BTN_NUM]
                 unit_option_canvas = pg.Surface((UNIT_BTN_WIDTH, UNIT_BTN_HEIGHT))
                 unit_option_canvas.fill(DARK_GREY)
                 unit_option_image = unit_option[0][0]
@@ -207,29 +217,14 @@ class MenuUnitData(pg.sprite.Sprite):
             i +=1
 
     def next_page(self):
-        if len(self.units) > UNIT_BTN_NUM*(self.page+1):
+        if len(self.unit_options) > UNIT_BTN_NUM*(self.page+1):
             self.page +=1
-            self.set_btns()
+            self.set_unit_options()
 
     def prev_page(self):
         if self.page > 0:
             self.page -= 1
-            self.set_btns()
-
-    def set_btns(self):
-        unit_btns = list()
-        null_image = pg.Surface((UNIT_BTN_WIDTH, UNIT_BTN_HEIGHT))
-        null_image.fill(DARK_GREY)
-
-        for i in range(UNIT_BTN_NUM):
-            if len(self.units) > i+self.page*UNIT_BTN_NUM:
-                unit_btns.append(self.units[i + (self.page*UNIT_BTN_NUM)])
-            else:
-                unit_btns.append([null_image, [lambda: None]])
-
-        for i, b in enumerate(unit_btns):
-            self.unit_btns[i].set_unit_btn(b[0])
-            self.unit_btns[i].set_action(*b[1])
+            self.set_unit_options()
 
     def update(self):
         self.update_focus()

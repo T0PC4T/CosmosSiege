@@ -11,6 +11,12 @@ class Unit(ButtonBase):
         self.game = game
         self.set_action(self.game.menu.set_focus, self)
 
+    def get_pos(self, center=True):
+        if center:
+            return pg.Vector2(self.rect.center)
+        else:
+            return pg.Vector2(self.rect)
+
     def get_tile_x_tile_y(self):
         x, y = getattr(self, "pos", pg.Vector2((0, 0)))
         return int(x//TILE_SIZE), int(y//TILE_SIZE)

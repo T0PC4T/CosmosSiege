@@ -1,1 +1,1 @@
-from .ships import ScoutShip, RedShip, FleeShip, CargoShip
+from .ships import ScoutShip, RedShip, FleeShip, CargoShip, JetShip

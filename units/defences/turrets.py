@@ -1,9 +1,9 @@
 import pygame as pg
 from settings import *
-from .shared import Defence, Projectile
-from ..shared import Unit
+from .shared import Defence
 from assets import Images
-import random
+
+from .projectiles import Missile, Ball, Beam, Zap
 
 class BeamTurret(Defence):
     price = 20
@@ -116,49 +116,41 @@ class MissileTurret(Defence):
             self.image = pg.transform.rotate(self.src_img, self.rotation)
 
 
+class ZapTurret(Defence):
+    price = 40
+    src_img = Images.zap_turret_img
 
-class Beam(Projectile):
-    _image = pg.Surface((TILE_SIZE // 4, TILE_SIZE // 4))
-    _image.fill(BLACK)
-    pg.draw.rect(_image, RED, (0, TILE_SIZE // 8, TILE_SIZE, TILE_SIZE - TILE_SIZE // 8))
-    _image.set_colorkey(BLACK)
-    src_img = _image
+    def __init__(self, game, pos):
+        Defence.__init__(self, game=game,
+                         pos=pos,
+                         min_range=TILE_SIZE*7,
+                         max_range=WIDTH,
+                         fire_rate=0,
+                         projectile=Zap)
 
-    speed = 7
-    duration = 300
-    damage = 10
+        self.lvl = 1
+        # Defence Center variables
 
-    def __init__(self, game, turret, target):
-        Projectile.__init__(self, game, turret, target)
+    def upgrade_to(self, lvl):
+        if lvl == 2:
+            self.lvl = 2
+            self.fire_rate = 200
 
+    def get_lvl_options(self):
+        if self.lvl == 1:
+            return [[[Images.blue_add_img, "Level 2"], [self.upgrade_to, 2]]]
+        else:
+            return list()
 
-class Ball(Projectile):
-    inaccuracy = 15
-    speed = 4
-    duration = 120
-    damage = 2
+    def get_title(self):
+        return "Zap lvl:{}".format(self.lvl)
 
-    _image = pg.Surface((TILE_SIZE // 4, TILE_SIZE // 4))
-    _image.fill(BLACK)
-    pg.draw.circle(_image, GREEN, (TILE_SIZE // 8, TILE_SIZE // 8), TILE_SIZE // 8)
-    _image.set_colorkey(BLACK)
-    src_img = _image
+    def get_options(self):
+        return self._get_options() + self.get_lvl_options()
 
-
-    def __init__(self, game, turret, target):
-        if self.turret.lvl == 2:
-            self.damage = 4
-
-        Projectile.__init__(self, game, turret, target)
-        self.velocity = self.velocity.rotate((random.randint(0, self.inaccuracy) - random.randint(0, self.inaccuracy)))
-
-
-class Missile(Projectile):
-    src_img = Images.missile_img
-    speed = 4
-    duration = 400
-    damage = 30
-
-    def __init__(self, game, turret, target):
-        Projectile.__init__(self, game, turret, target, "homing")
+    def update(self):
+        self.defence_update()
+        if self.target:
+            self.rotation = (self.target.get_pos() - self.pos).angle_to(pg.Vector2(1, 0))
+            self.image = pg.transform.rotate(self.src_img, self.rotation)
 

@@ -53,7 +53,9 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         return [[[ScoutShip.get_img(ScoutShip), ScoutShip.get_title(ScoutShip)], [self.game.attack_center.attack, ScoutShip]],
                 [[RedShip.get_img(RedShip), RedShip.get_title(RedShip)], [self.game.attack_center.attack, RedShip]],
                 [[FleeShip.get_img(FleeShip), FleeShip.get_title(FleeShip)], [self.game.attack_center.attack, FleeShip]],
-                [[CargoShip.get_img(CargoShip), CargoShip.get_title(CargoShip)], [self.game.attack_center.attack, CargoShip]]]
+                [[CargoShip.get_img(CargoShip), CargoShip.get_title(CargoShip)], [self.game.attack_center.attack, CargoShip]],
+                [[JetShip.get_img(JetShip), JetShip.get_title(JetShip)], [self.game.attack_center.attack, JetShip]],
+                [[JetShip.get_img(JetShip), JetShip.get_title(JetShip)], [self.game.attack_center.attack, JetShip]]]
 
     def round_active(self):
         return self.attackers.round_active

@@ -61,7 +61,8 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         return [[[Barricade.get_img(Barricade), "Barricade ({})".format(Barricade.get_price(Barricade))], [self.game.defence_center.build, Barricade]],
                 [[BeamTurret.get_img(BeamTurret), "Beam ({})".format(BeamTurret.get_price(BeamTurret))], [self.game.defence_center.build, BeamTurret]],
                 [[SpitterTurret.get_img(SpitterTurret), "Spitter ({})".format(SpitterTurret.get_price(SpitterTurret))], [self.game.defence_center.build, SpitterTurret]],
-                [[MissileTurret.get_img(MissileTurret), "Missile ({})".format(MissileTurret.get_price(MissileTurret))], [self.game.defence_center.build, MissileTurret]]]
+                [[MissileTurret.get_img(MissileTurret), "Missile ({})".format(MissileTurret.get_price(MissileTurret))], [self.game.defence_center.build, MissileTurret]],
+                [[ZapTurret.get_img(ZapTurret), "Zap ({})".format(ZapTurret.get_price(ZapTurret))], [self.game.defence_center.build, ZapTurret]]]
 
     def get_global_info(self):
         return self.credits, self.income

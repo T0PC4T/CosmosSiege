@@ -1,6 +1,6 @@
 import sys
 from interface.menu import *
-BLOCKS = [0.25, 0.25]
+BLOCKS = [1, 1]
 
 LOAD_DATA = None
 

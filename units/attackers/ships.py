@@ -7,7 +7,7 @@ from settings import *
 class ScoutShip(Attacker, pg.sprite.Sprite):
     name = "Scout"
     src_img = Images.scout_ship_img
-    price = 10
+    price = 12
     income = 3
     speed = 1.3
     hp = 15
@@ -18,7 +18,7 @@ class RedShip(Attacker):
     name = "R.E.D"
     src_img = Images.red_ship_img
     price = 15
-    income = 7
+    income = 15
     speed = 0.8
     hp = 30
     hit_box_dim = TILE_SIZE // 3
@@ -44,3 +44,13 @@ class CargoShip(Attacker):
     speed = 0.5
     hp = 50
     hit_box_dim = TILE_SIZE//2
+
+
+class JetShip(Attacker):
+    name = "Jet"
+    src_img = Images.jet_ship_img
+    price = 60
+    income = 15
+    speed = 1.8
+    hp = 30
+    hit_box_dim = TILE_SIZE // 3

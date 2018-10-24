@@ -40,7 +40,7 @@ class Attacker(Unit, pg.sprite.Sprite):
         return "attackers"
 
     def get_info(self):
-        return {"HP": "{}/{}".format(self.hp, self.max_hp),
+        return {"HP": "{}/{}".format(int(self.hp), self.max_hp),
                 "SPEED": self.speed*10}
 
     def get_speed(self):
@@ -48,12 +48,6 @@ class Attacker(Unit, pg.sprite.Sprite):
 
     def get_velocity(self):
         return vec(self.velocity)
-
-    def get_pos(self, center=True):
-        if center:
-            return vec(self.hit_rect.center)
-        else:
-            return vec(self.pos)
 
     def get_title(self):
         return "{} {}({})".format(self.name, self.price, self.income)

@@ -60,8 +60,8 @@ class Defence(Structure):
             return "SHORT"
 
     def get_info(self):
-        return {"Dmg": self.projectile.damage,
-                "Rate": self.fire_rate,
+        return {"Dmg": 0,
+                "Rate": str(self.fire_rate//60) + "s",
                 "Rng": self.get_range(),
                 "Value": self.sell_value}
 
@@ -106,17 +106,20 @@ class Defence(Structure):
 
 
 class Projectile(pg.sprite.Sprite):
-    def __init__(self, game, turret, target, bullet_alg="predictive"):
+    def __init__(self, game, turret, target, projectile_alg="predictive"):
         self.game = game
         self.groups = game.all_sprites, game.projectiles
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.turret = turret
-        self.pos = vec(turret.get_projectile_pos())
+        if projectile_alg == "instant":
+            self.pos = target.get_pos()
+        else:
+            self.pos = vec(turret.get_projectile_pos())
 
         self.target = target
 
-        if bullet_alg == "predictive":
+        if projectile_alg == "predictive":
             if target.get_velocity().length() == 0:
                 self.target_pos = target.get_pos()
             else:
@@ -134,12 +137,14 @@ class Projectile(pg.sprite.Sprite):
         else:
             self.target_pos = target.get_pos()
 
-        self.bullet_alg = bullet_alg
 
-        self.set_projectile(self.target_pos)
-        self.rect.center = self.pos
-        self.hit_rect = pg.Rect(*self.pos, 4, 4)
-        self.hit_rect.center = self.rect.center
+        self.projectile_alg = projectile_alg
+
+        if not projectile_alg == "instant":
+            self.set_projectile(self.target_pos)
+            self.rect.center = self.pos
+            self.hit_rect = pg.Rect(*self.pos, 4, 4)
+            self.hit_rect.center = self.rect.center
 
     def set_projectile(self, target_pos):
         self.velocity = target_pos - self.pos
@@ -159,8 +164,15 @@ class Projectile(pg.sprite.Sprite):
         hit.subtract_hp(self.damage)
         self.die()
 
-    def bullet_update(self):
-        if self.bullet_alg == "homing" and self.target.can_shoot:
+    def projectile_update(self):
+        if self.projectile_alg == "instant":
+            if self.target.can_shoot:
+                return self.hit(self.target)
+            else:
+                return self.die()
+
+
+        if self.projectile_alg == "homing" and self.target.can_shoot:
             self.set_projectile(self.target.get_pos())
 
         self.pos = self.pos + self.velocity
@@ -174,8 +186,5 @@ class Projectile(pg.sprite.Sprite):
         for hit in pg.sprite.spritecollide(self, self.game.attackers, False, Projectile.hit_hit_rect):
             self.hit(hit)
 
-
-
-
     def update(self):
-        self.bullet_update()
+        self.projectile_update()
