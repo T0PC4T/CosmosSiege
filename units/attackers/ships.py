@@ -6,7 +6,7 @@ from settings import *
 
 class ScoutShip(Attacker, pg.sprite.Sprite):
     name = "Scout"
-    src_img = Images.scoutship_img
+    src_img = Images.scout_ship_img
     price = 10
     income = 3
     speed = 1.3

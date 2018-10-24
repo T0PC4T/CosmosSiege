@@ -43,15 +43,12 @@ class Structure(Unit, pg.sprite.Sprite):
 class Defence(Structure):
 
     def __init__(self, game, pos, min_range, max_range, fire_rate,
-                 projectile, projectile_speed, projectile_duration, projectile_damage):
+                 projectile):
 
         Structure.__init__(self, game, self.src_img, pos)
         self.min_range = min_range
         self.max_range = max_range
         self.projectile = projectile
-        self.projectile_speed = projectile_speed
-        self.projectile_duration = projectile_duration
-        self.projectile_damage = projectile_damage
         self.target = None
         self.fire_rate = fire_rate
         self.next_shot = 0
@@ -63,7 +60,7 @@ class Defence(Structure):
             return "SHORT"
 
     def get_info(self):
-        return {"Dmg": self.projectile_damage,
+        return {"Dmg": self.projectile.damage,
                 "Rate": self.fire_rate,
                 "Rng": self.get_range(),
                 "Value": self.sell_value}
@@ -102,19 +99,22 @@ class Defence(Structure):
             self.shoot()
 
     def shoot(self):
-        self.projectile(self.game, self.get_projectile_pos(), self.target,
-                        self.projectile_speed, self.projectile_duration, self.projectile_damage)
+        self.projectile(self.game, self, self.target)
         self.next_shot = self.fire_rate
 
 
 
 
 class Projectile(pg.sprite.Sprite):
-    def __init__(self, game, src_img, pos, target, speed, duration, damage, bullet_alg="predictive"):
+    def __init__(self, game, turret, target, bullet_alg="predictive"):
         self.game = game
         self.groups = game.all_sprites, game.projectiles
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.pos = vec(pos)
+
+        self.turret = turret
+        self.pos = vec(turret.get_projectile_pos())
+
+        self.target = target
 
         if bullet_alg == "predictive":
             if target.get_velocity().length() == 0:
@@ -122,7 +122,7 @@ class Projectile(pg.sprite.Sprite):
             else:
                 current_target_pos = target.get_pos()
                 current_distance = current_target_pos - self.pos
-                distance_frames = current_distance.length() / speed
+                distance_frames = current_distance.length() / self.speed
                 target_distance = target.get_velocity() * distance_frames
 
                 moved_target_pos = current_target_pos + target_distance
@@ -134,20 +134,19 @@ class Projectile(pg.sprite.Sprite):
         else:
             self.target_pos = target.get_pos()
 
-        self.speed = speed
-        self.duration = duration
-        self.damage = damage
+        self.bullet_alg = bullet_alg
 
-        self.velocity = self.target_pos - pos
-        self.velocity.scale_to_length(speed)
+        self.set_projectile(self.target_pos)
+        self.rect.center = self.pos
+        self.hit_rect = pg.Rect(*self.pos, 4, 4)
+        self.hit_rect.center = self.rect.center
+
+    def set_projectile(self, target_pos):
+        self.velocity = target_pos - self.pos
+        self.velocity.scale_to_length(self.speed)
         self.rotation = self.velocity.angle_to(vec(1, 0))
-        self.image = pg.transform.rotate(src_img, self.rotation)
+        self.image = pg.transform.rotate(self.src_img, self.rotation)
         self.rect = self.image.get_rect()
-        self.rect.topleft = pos
-        self.hit_rect = pg.Rect(*pos, 4, 4)
-
-    def set_projectile(self):
-        pass
 
     @staticmethod
     def hit_hit_rect(one, two):
@@ -161,9 +160,12 @@ class Projectile(pg.sprite.Sprite):
         self.die()
 
     def bullet_update(self):
+        if self.bullet_alg == "homing" and self.target.can_shoot:
+            self.set_projectile(self.target.get_pos())
+
         self.pos = self.pos + self.velocity
-        self.rect.topleft = self.pos
-        self.hit_rect.topleft = self.rect.topleft
+        self.rect.center = self.pos
+        self.hit_rect.center = self.rect.center
         self.duration -= 1
 
         if self.duration <= 0:

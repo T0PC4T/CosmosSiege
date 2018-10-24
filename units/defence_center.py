@@ -58,9 +58,10 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
                 }
 
     def get_options(self):
-        return [[[Images.barracade_img, "Barricade ({})".format(Barricade.get_price(Barricade))], [self.game.defence_center.build, Barricade]],
-                [[Images.basic_turret_img, "Beam ({})".format(BasicTurret.get_price(BasicTurret))], [self.game.defence_center.build, BasicTurret]],
-                [[Images.spitter_img, "Spitter ({})".format(SpitterTurret.get_price(SpitterTurret))], [self.game.defence_center.build, SpitterTurret]]]
+        return [[[Barricade.get_img(Barricade), "Barricade ({})".format(Barricade.get_price(Barricade))], [self.game.defence_center.build, Barricade]],
+                [[BeamTurret.get_img(BeamTurret), "Beam ({})".format(BeamTurret.get_price(BeamTurret))], [self.game.defence_center.build, BeamTurret]],
+                [[SpitterTurret.get_img(SpitterTurret), "Spitter ({})".format(SpitterTurret.get_price(SpitterTurret))], [self.game.defence_center.build, SpitterTurret]],
+                [[MissileTurret.get_img(MissileTurret), "Missile ({})".format(MissileTurret.get_price(MissileTurret))], [self.game.defence_center.build, MissileTurret]]]
 
     def get_global_info(self):
         return self.credits, self.income
