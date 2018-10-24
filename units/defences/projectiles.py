@@ -48,20 +48,3 @@ class Missile(Projectile):
 
     def __init__(self, game, turret, target):
         Projectile.__init__(self, game, turret, target, "homing")
-
-
-class Zap(Projectile):
-    speed = 0
-    duration = 5
-    damage = 0.1
-
-    def __init__(self, game, turret, target):
-        _image = pg.Surface((ARENA_WIDTH, ARENA_HEIGHT))
-        _image.fill(BLACK)
-        pg.draw.line(_image, RED, turret.get_pos(), target.get_pos())
-        _image.set_colorkey(BLACK)
-        self.image = _image
-        self.rect = self.image.get_rect()
-        Projectile.__init__(self, game, turret, target, "instant")
-
-

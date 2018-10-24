@@ -33,6 +33,7 @@ class AttackCenter(Unit, pg.sprite.Sprite):
 
         self.attackers = Attackers(self.game)
         self.paths = list()
+        self.lvl = 1
 
         # Grid Variables
 
@@ -49,13 +50,29 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         return {"rnd": "active" if self.round_active() else "inactive",
                 "ships": self.attackers.num()}
 
-    def get_options(self):
-        return [[[ScoutShip.get_img(ScoutShip), ScoutShip.get_title(ScoutShip)], [self.game.attack_center.attack, ScoutShip]],
+    def upgrade_lvl(self, lvl, cost):
+        if self.game.defence_center.buy_option(cost):
+            self.lvl = lvl
+
+    def lvl_2_options(self):
+        if self.lvl >= 2:
+            return [[[Cruiser.get_img(Cruiser), Cruiser.get_title(Cruiser)], [self.game.attack_center.attack, Cruiser]]]
+
+        return list()
+
+    def lvl_1_options(self):
+        options_list = [[[ScoutShip.get_img(ScoutShip), ScoutShip.get_title(ScoutShip)], [self.game.attack_center.attack, ScoutShip]],
                 [[RedShip.get_img(RedShip), RedShip.get_title(RedShip)], [self.game.attack_center.attack, RedShip]],
                 [[FleeShip.get_img(FleeShip), FleeShip.get_title(FleeShip)], [self.game.attack_center.attack, FleeShip]],
                 [[CargoShip.get_img(CargoShip), CargoShip.get_title(CargoShip)], [self.game.attack_center.attack, CargoShip]],
-                [[JetShip.get_img(JetShip), JetShip.get_title(JetShip)], [self.game.attack_center.attack, JetShip]],
                 [[JetShip.get_img(JetShip), JetShip.get_title(JetShip)], [self.game.attack_center.attack, JetShip]]]
+        if self.lvl == 1:
+            options_list.append([[Images.blue_add_img, "LvL 2 (300)"], [self.upgrade_lvl, 2, 300]])
+
+        return options_list
+
+    def get_options(self):
+        return self.lvl_1_options() + self.lvl_2_options()
 
     def round_active(self):
         return self.attackers.round_active

@@ -40,7 +40,7 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         self.income = 10
         self.building = False
         self.defences = Defenders(self.game)
-
+        self.lvl = 1
         # Grid Variables
 
     @staticmethod
@@ -57,12 +57,30 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
                 "Income": int(self.income),
                 }
 
+    def upgrade_lvl(self, lvl, cost):
+        if self.buy_option(cost):
+            self.lvl = lvl
+
+    def lvl_2_options(self):
+        if self.lvl >= 2:
+            return list()
+
+        return list()
+
+    def lvl_1_options(self):
+        count = self.defences.count()
+        options_list = [[[Barricade.get_img(Barricade),  "Barricade ({})".format(Barricade.get_price(Barricade, count))], [self.game.defence_center.build, Barricade]],
+                [[BeamTurret.get_img(BeamTurret),        "Beam ({})".format(BeamTurret.get_price(BeamTurret, count))], [self.game.defence_center.build, BeamTurret]],
+                [[SpitterTurret.get_img(SpitterTurret),  "Spitter ({})".format(SpitterTurret.get_price(SpitterTurret, count))], [self.game.defence_center.build, SpitterTurret]],
+                [[MissileTurret.get_img(MissileTurret),  "Missile ({})".format(MissileTurret.get_price(MissileTurret, count))], [self.game.defence_center.build, MissileTurret]],
+                [[ZapTurret.get_img(ZapTurret),          "Zap ({})".format(ZapTurret.get_price(ZapTurret, count))], [self.game.defence_center.build, ZapTurret]]]
+        if self.lvl == 1:
+            options_list.append([[Images.blue_add_img, "LvL 2 (400)"], [self.upgrade_lvl, 2, 400]])
+
+        return options_list
+
     def get_options(self):
-        return [[[Barricade.get_img(Barricade), "Barricade ({})".format(Barricade.get_price(Barricade))], [self.game.defence_center.build, Barricade]],
-                [[BeamTurret.get_img(BeamTurret), "Beam ({})".format(BeamTurret.get_price(BeamTurret))], [self.game.defence_center.build, BeamTurret]],
-                [[SpitterTurret.get_img(SpitterTurret), "Spitter ({})".format(SpitterTurret.get_price(SpitterTurret))], [self.game.defence_center.build, SpitterTurret]],
-                [[MissileTurret.get_img(MissileTurret), "Missile ({})".format(MissileTurret.get_price(MissileTurret))], [self.game.defence_center.build, MissileTurret]],
-                [[ZapTurret.get_img(ZapTurret), "Zap ({})".format(ZapTurret.get_price(ZapTurret))], [self.game.defence_center.build, ZapTurret]]]
+        return self.lvl_1_options() + self.lvl_2_options()
 
     def get_global_info(self):
         return self.credits, self.income
@@ -78,6 +96,7 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         self.add_credits(defence_cls.get_sell_value())
         x, y = defence_cls.get_tile_x_tile_y()
         self.game.grid[y][x] = None
+        self.defences.remove_defence(defence_cls)
         defence_cls.die()
 
     def add_credits(self, credits, income=0):
@@ -145,7 +164,7 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
                     self.game.grid[tile_y][tile_x] = True
                     ways = self.game.attack_center.generate_paths(self.game.grid)
                     round_active = self.game.attack_center.round_active()
-                    if ways and not round_active and self.buy_option(self.defence_cls.get_price(self.defence_cls)):
+                    if ways and not round_active and self.buy_option(self.defence_cls.get_price(self.defence_cls) + self.defences.count()):
                         defence_init = self.defence_cls(self.game, vec(tile_x, tile_y) * TILE_SIZE)
                         self.game.grid[tile_y][tile_x] = self.defences.add_defence(defence_init)
                         self.not_building()
@@ -164,6 +183,12 @@ class Defenders():
     def add_defence(self, defender):
         self.defenders.append(defender)
         return defender
+
+    def remove_defence(self, defender):
+        self.defenders.remove(defender)
+
+    def count(self):
+        return len(self.defenders)
 
     def try_build(self):
         pass

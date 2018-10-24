@@ -10,7 +10,7 @@ class ScoutShip(Attacker, pg.sprite.Sprite):
     price = 12
     income = 3
     speed = 1.3
-    hp = 15
+    hp = 20
     hit_box_dim = TILE_SIZE // 4
 
 
@@ -19,10 +19,9 @@ class RedShip(Attacker):
     src_img = Images.red_ship_img
     price = 15
     income = 15
-    speed = 0.8
-    hp = 30
+    speed = 0.9
+    hp = 35
     hit_box_dim = TILE_SIZE // 3
-
 
 
 class FleeShip(Attacker):
@@ -33,7 +32,6 @@ class FleeShip(Attacker):
     speed = 1.2
     hp = 15
     hit_box_dim = TILE_SIZE // 6
-
 
 
 class CargoShip(Attacker):
@@ -51,6 +49,15 @@ class JetShip(Attacker):
     src_img = Images.jet_ship_img
     price = 60
     income = 15
-    speed = 1.8
-    hp = 30
+    speed = 1.9
+    hp = 50
     hit_box_dim = TILE_SIZE // 3
+
+class Cruiser(Attacker):
+    name = "Cruiser"
+    src_img = Images.cruiser_img
+    price = 150
+    income = 70
+    speed = 1.6
+    hp = 150
+    hit_box_dim = TILE_SIZE // 2

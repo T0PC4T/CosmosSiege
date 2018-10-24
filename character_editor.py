@@ -5,7 +5,6 @@ BLOCKS = [1, 1]
 LOAD_DATA = None
 
 
-
 if LOAD_DATA:
     BLOCKS = [len(LOAD_DATA[0])//TILE_SIZE, len(LOAD_DATA)//TILE_SIZE]
 

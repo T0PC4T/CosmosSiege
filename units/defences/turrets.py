@@ -2,8 +2,8 @@ import pygame as pg
 from settings import *
 from .shared import Defence
 from assets import Images
-
-from .projectiles import Missile, Ball, Beam, Zap
+import random
+from .projectiles import Missile, Ball, Beam
 
 class BeamTurret(Defence):
     price = 20
@@ -121,12 +121,14 @@ class ZapTurret(Defence):
     src_img = Images.zap_turret_img
 
     def __init__(self, game, pos):
+        self.damage = 0.07
+
         Defence.__init__(self, game=game,
                          pos=pos,
                          min_range=TILE_SIZE*7,
                          max_range=WIDTH,
                          fire_rate=0,
-                         projectile=Zap)
+                         projectile=None)
 
         self.lvl = 1
         # Defence Center variables
@@ -134,7 +136,7 @@ class ZapTurret(Defence):
     def upgrade_to(self, lvl):
         if lvl == 2:
             self.lvl = 2
-            self.fire_rate = 200
+            self.damage = 0.15
 
     def get_lvl_options(self):
         if self.lvl == 1:
@@ -148,9 +150,36 @@ class ZapTurret(Defence):
     def get_options(self):
         return self._get_options() + self.get_lvl_options()
 
+    def defence_update(self):
+        self.btn_update()
+
+        if self.target:
+            if not self.target.can_shoot:
+                self.target = None
+            else:
+                d = (self.target.get_pos() - self.pos).length()
+                if not self.vec_in_range(d):
+                    self.target = None
+
+        if not self.target:
+            attackers = list(self.game.attackers)
+            random.shuffle(attackers)
+            for attacker in attackers:
+                if not attacker.can_shoot:
+                    continue
+                d = (self.pos - attacker.get_pos()).length()
+                if self.vec_in_range(d):
+                    self.target = attacker
+                    break
+
+        if self.target and not self.next_shot:
+            self.shoot()
+
+    def shoot(self):
+        self.rotation = (self.target.get_pos() - self.pos).angle_to(pg.Vector2(1, 0))
+        self.image = pg.transform.rotate(self.src_img, self.rotation)
+        pg.draw.line(self.game.screen, RED, self.target.get_pos(), self.get_pos())
+        self.target.subtract_hp(self.damage)
+
     def update(self):
         self.defence_update()
-        if self.target:
-            self.rotation = (self.target.get_pos() - self.pos).angle_to(pg.Vector2(1, 0))
-            self.image = pg.transform.rotate(self.src_img, self.rotation)
-

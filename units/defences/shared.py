@@ -22,6 +22,9 @@ class Structure(Unit, pg.sprite.Sprite):
     def get_type():
         return "defence"
 
+    def get_price(self, count=0):
+        return count + getattr(self, "price", 0)
+
     def die(self):
         self.kill()
 
@@ -112,10 +115,8 @@ class Projectile(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.turret = turret
-        if projectile_alg == "instant":
-            self.pos = target.get_pos()
-        else:
-            self.pos = vec(turret.get_projectile_pos())
+
+        self.pos = vec(turret.get_projectile_pos())
 
         self.target = target
 
@@ -136,7 +137,6 @@ class Projectile(pg.sprite.Sprite):
                 self.target_pos = current_target_pos + moved_target_vec
         else:
             self.target_pos = target.get_pos()
-
 
         self.projectile_alg = projectile_alg
 

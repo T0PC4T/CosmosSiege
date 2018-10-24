@@ -52,6 +52,7 @@ class Game:
         while self.playing:
             self.clock.tick(FPS)
             self.events()
+            self.draw_background()
             self.update()
             self.draw()
 
@@ -64,9 +65,11 @@ class Game:
         self.global_info = ["[C] {} ({})".format(*self.defence_center.get_global_info())]
         self.all_sprites.update()
 
+    def draw_background(self):
+        self.screen.blit(self.background_image, (0, 0))
+
     def draw(self):
         pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
-        self.screen.blit(self.background_image, (0, 0))
         self.projectiles.draw(self.screen)
         self.structures.draw(self.screen)
         self.defences.draw(self.screen)
