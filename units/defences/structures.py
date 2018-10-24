@@ -6,8 +6,9 @@ from assets import Images
 
 class Barricade(Structure):
     price = 1
+    src_img = Images.barracade_img
     def __init__(self, game, pos):
-        Structure.__init__(self, game, Images.barracade_img, pos)
+        Structure.__init__(self, game, self.src_img, pos)
         self.groups = game.all_sprites, game.defences
         pg.sprite.Sprite.__init__(self, self.groups)
 

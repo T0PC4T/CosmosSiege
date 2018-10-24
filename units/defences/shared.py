@@ -42,9 +42,10 @@ class Structure(Unit, pg.sprite.Sprite):
 
 class Defence(Structure):
 
-    def __init__(self, game, src_img, pos, min_range, max_range, fire_rate,
+    def __init__(self, game, pos, min_range, max_range, fire_rate,
                  projectile, projectile_speed, projectile_duration, projectile_damage):
-        Structure.__init__(self, game, src_img, pos)
+
+        Structure.__init__(self, game, self.src_img, pos)
         self.min_range = min_range
         self.max_range = max_range
         self.projectile = projectile
@@ -68,8 +69,7 @@ class Defence(Structure):
                 "Value": self.sell_value}
 
     def get_projectile_pos(self):
-        offset = TILE_SIZE // 2
-        return self.pos + vec(offset, offset)
+        return vec(self.rect.center)
 
     def vec_in_range(self, d):
         return d > self.min_range and d < self.max_range
@@ -109,9 +109,11 @@ class Defence(Structure):
 
 
 
-class Projectile():
+class Projectile(pg.sprite.Sprite):
     def __init__(self, game, src_img, pos, target, speed, duration, damage, bullet_alg="predictive"):
         self.game = game
+        self.groups = game.all_sprites, game.projectiles
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.pos = vec(pos)
 
         if bullet_alg == "predictive":
@@ -139,11 +141,13 @@ class Projectile():
         self.velocity = self.target_pos - pos
         self.velocity.scale_to_length(speed)
         self.rotation = self.velocity.angle_to(vec(1, 0))
-
         self.image = pg.transform.rotate(src_img, self.rotation)
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
         self.hit_rect = pg.Rect(*pos, 4, 4)
+
+    def set_projectile(self):
+        pass
 
     @staticmethod
     def hit_hit_rect(one, two):

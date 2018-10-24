@@ -14,7 +14,7 @@ class Attacker(Unit, pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.game.attack_center.rect.x
         self.rect.y = self.game.attack_center.rect.y
-        self.hit_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE // 2, TILE_SIZE // 2)
+        self.hit_rect = pg.Rect(self.rect.centerx, self.rect.centery, self.hit_box_dim, self.hit_box_dim)
 
         self.original_speed = self.speed
         self.speed = self.speed
@@ -49,8 +49,11 @@ class Attacker(Unit, pg.sprite.Sprite):
     def get_velocity(self):
         return vec(self.velocity)
 
-    def get_pos(self):
-        return vec(self.pos)
+    def get_pos(self, center=True):
+        if center:
+            return vec(self.hit_rect.center)
+        else:
+            return vec(self.pos)
 
     def get_title(self):
         return "{} {}({})".format(self.name, self.price, self.income)
@@ -61,6 +64,9 @@ class Attacker(Unit, pg.sprite.Sprite):
             self.die()
 
     def die(self):
+        if self.hp <= 0:
+            self.game.defence_center.add_credits(self.get_income())
+
         self.game.attack_center.attackers.i_died(self)
         self.can_shoot = False
         self.kill()
@@ -113,7 +119,7 @@ class Attacker(Unit, pg.sprite.Sprite):
             else:
                 self.rect.topleft = self.pos
 
-        self.hit_rect.topleft = self.rect.topleft
+        self.hit_rect.center = self.rect.center
 
     def update(self):
         self.attacker_update()

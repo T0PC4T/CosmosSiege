@@ -1,3 +1,3 @@
-from .turrets import BasicTurret
+from .turrets import BasicTurret, SpitterTurret
 from .structures import Barricade
 

@@ -48,7 +48,6 @@ class Game:
 
         # FONTS
 
-
     def run(self):
         while self.playing:
             self.clock.tick(FPS)
@@ -81,6 +80,16 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_1:
+                    self.menu.unit_info.unit_btns[0].run_action()
+                if event.key == pg.K_2:
+                    self.menu.unit_info.unit_btns[1].run_action()
+                if event.key == pg.K_3:
+                    self.menu.unit_info.unit_btns[2].run_action()
+                if event.key == pg.K_4:
+                    self.menu.unit_info.unit_btns[3].run_action()
+
 
         if pg.mouse.get_pressed()[2]:
             self.defence_center.not_building()
