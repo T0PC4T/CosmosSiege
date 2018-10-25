@@ -11,7 +11,7 @@ message_queues = {}
 player_connections = list()
 
 while inputs:
-    readable, writable, exceptional = select.select(inputs, outputs, list())
+    readable, writable, exceptional = select.select(inputs, outputs, inputs)
 
     for s in readable:
         if s is server:

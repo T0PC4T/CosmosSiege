@@ -36,7 +36,7 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
         # Defence Center variables
 
         self.lives = 100
-        self.credits = 300
+        self.credits = 1500
         self.income = 10
         self.building = False
         self.defences = Defenders(self.game)
@@ -62,8 +62,9 @@ class DefenceCenter(Unit, pg.sprite.Sprite):
             self.lvl = lvl
 
     def lvl_2_options(self):
+        count = self.defences.count()
         if self.lvl >= 2:
-            return list()
+            return [[[ScudTurret.get_img(ScudTurret), "Scud ({})".format(ScudTurret.get_price(ScudTurret, count))], [self.game.defence_center.build, ScudTurret]]]
 
         return list()
 
