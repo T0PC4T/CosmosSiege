@@ -39,7 +39,6 @@ while inputs:
         else:
             s.sendall(next_msg)
 
-
     for s in exceptional:
         pass
 
