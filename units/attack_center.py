@@ -54,11 +54,32 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         if self.game.defence_center.buy_option(cost):
             self.lvl = lvl
 
-    def lvl_2_options(self):
-        if self.lvl >= 2:
-            return [[[Cruiser.get_img(Cruiser), Cruiser.get_title(Cruiser)], [self.game.attack_center.attack, Cruiser]]]
+    def lvl_3_options(self):
+        options_list = list()
 
-        return list()
+        if self.lvl >= 3:
+            options_list = list()
+
+        if self.lvl == 3:
+            pass
+            # options_list.append([[Images.blue_add_img, "LvL 3 (1500)"], [self.upgrade_lvl, 3, 1500]])
+
+        return options_list
+
+    def lvl_2_options(self):
+        options_list = list()
+
+        if self.lvl >= 2:
+            options_list = [[[ScoutII.get_img(ScoutII), ScoutII.get_title(ScoutII)], [self.game.attack_center.attack, ScoutII]],
+                    [[CargoII.get_img(CargoII), CargoII.get_title(CargoII)], [self.game.attack_center.attack, CargoII]],
+                    [[Cruiser.get_img(Cruiser), Cruiser.get_title(Cruiser)], [self.game.attack_center.attack, Cruiser]],
+                    [[Ghost.get_img(Ghost), Ghost.get_title(Ghost)], [self.game.attack_center.attack, Ghost]],
+                    [[MotherShip.get_img(MotherShip), MotherShip.get_title(MotherShip)], [self.game.attack_center.attack, MotherShip]]]
+
+        if self.lvl == 2:
+            options_list.append([[Images.blue_add_img, "LvL 3 (1500)"], [self.upgrade_lvl, 3, 1500]])
+
+        return options_list
 
     def lvl_1_options(self):
         options_list = [[[ScoutShip.get_img(ScoutShip), ScoutShip.get_title(ScoutShip)], [self.game.attack_center.attack, ScoutShip]],
@@ -72,7 +93,7 @@ class AttackCenter(Unit, pg.sprite.Sprite):
         return options_list
 
     def get_options(self):
-        return self.lvl_1_options() + self.lvl_2_options()
+        return self.lvl_1_options() + self.lvl_2_options() + self.lvl_3_options()
 
     def round_active(self):
         return self.attackers.round_active
@@ -218,6 +239,10 @@ class Attackers():
         if self.round_active == False:
             self.attacker_count = len(self.attackers)
             self.round_active = True
+            self.game.s_conn.send_units(self.attackers)
+
+    def set_enemy_attackers(self):
+        pass
 
     def end_round(self):
         self.game.defence_center.end_round()

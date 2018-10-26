@@ -3,10 +3,11 @@ from units import *
 from interface.menu import *
 from assets import *
 from random import randint
-
+from client_connection import ClientConnection
 
 class Game:
     def __init__(self, screen, clock, server_connection=None):
+        self.s_conn = ClientConnection(self, server_connection)
         self.screen = screen
         self.clock = clock
         self.playing = True
@@ -54,11 +55,15 @@ class Game:
             self.events()
             self.draw_background()
             self.update()
+            self.communicate()
             self.draw()
 
     def quit(self):
         pg.quit()
         sys.exit()
+
+    def communicate(self):
+        self.s_conn.update()
 
     def update(self):
         # update portion of the game loop

@@ -183,3 +183,58 @@ class ZapTurret(Defence):
 
     def update(self):
         self.defence_update()
+
+
+class ScudTurret(Defence):
+    price = 150
+    src_img = Images.missile_turret_img
+
+    def __init__(self, game, pos):
+        self.damage = 0.07
+
+        Defence.__init__(self, game=game,
+                         pos=pos,
+                         min_range=TILE_SIZE*7,
+                         max_range=WIDTH,
+                         fire_rate=1200,
+                         projectile=Missile)
+        self.targets = list()
+        self.lvl = 1
+        # Defence Center variables
+
+    def upgrade_to(self, lvl):
+        if lvl == 2:
+            self.lvl = 2
+            self.fire_rate = 900
+
+    def get_lvl_options(self):
+        if self.lvl == 1:
+            return [[[Images.blue_add_img, "Level 2"], [self.upgrade_to, 2]]]
+        else:
+            return list()
+
+    def get_title(self):
+        return "Scud lvl:{}".format(self.lvl)
+
+    def get_options(self):
+        return self._get_options() + self.get_lvl_options()
+
+    def defence_update(self):
+        self.btn_update()
+        if self.next_shot > 0:
+            self.next_shot -= 1
+
+        if not self.next_shot:
+            self.targets = [target for target in self.game.attackers if target.can_shoot]
+
+        if self.targets and not self.next_shot:
+            self.shoot()
+
+    def shoot(self):
+        for target in self.targets:
+            self.projectile(self.game, self, target)
+
+        self.next_shot = self.fire_rate
+
+    def update(self):
+        self.defence_update()

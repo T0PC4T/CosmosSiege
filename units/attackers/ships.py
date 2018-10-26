@@ -53,11 +53,47 @@ class JetShip(Attacker):
     hp = 50
     hit_box_dim = TILE_SIZE // 3
 
+class ScoutII(Attacker):
+    name = "ScoutII"
+    src_img = Images.scout_ship_img
+    price = 150
+    income = 75
+    speed = 1.6
+    hp = 150
+    hit_box_dim = TILE_SIZE // 3
+
+class CargoII(Attacker):
+    name = "CargoII"
+    src_img = Images.cargo_ship_img
+    price = 200
+    income = 180
+    speed = 0.5
+    hp = 300
+    hit_box_dim = TILE_SIZE // 2
+
 class Cruiser(Attacker):
     name = "Cruiser"
     src_img = Images.cruiser_img
-    price = 150
-    income = 70
-    speed = 1.6
-    hp = 150
+    price = 250
+    income = 175
+    speed = 1.5
+    hp = 250
     hit_box_dim = TILE_SIZE // 2
+
+class Ghost(Attacker):
+    name = "Ghost"
+    src_img = Images.jet_ship_img
+    price = 400
+    income = 200
+    speed = 1.5
+    hp = 200
+    hit_box_dim = TILE_SIZE // 2
+
+class MotherShip(Attacker):
+    name = "Mother"
+    src_img = Images.cargo_ship_img
+    price = 750
+    income = 400
+    speed = 0.5
+    hp = 1000
+    hit_box_dim = TILE_SIZE * 1.2

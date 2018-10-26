@@ -1,5 +1,5 @@
 from game import Game
-# from pregame import PreGame
+from pregame import PreGame
 import pygame as pg
 from settings import *
 
@@ -10,8 +10,8 @@ pg.display.set_caption(TITLE)
 pg.font.init()
 clock = pg.time.Clock()
 
-# p = PreGame(screen, clock)
-# s = p.run()
+p = PreGame(screen, clock)
+s = p.run()
 
-g = Game(screen, clock, None)
+g = Game(screen, clock, s)
 g.run()

@@ -48,7 +48,6 @@ class PreGame:
                 self.s.sendall(b'echo')
                 data = self.s.recv(1024)
                 if not data or data != b'echo':
-                    print(data)
                     raise Exception("data was")
 
                 self.code = UNREADY
@@ -57,16 +56,16 @@ class PreGame:
                 self.code = CONNECT_TO_SERVER
 
         elif self.code > CONNECT_BETWEEN_UNREADY:
-            print("GETTING DATA")
             data = self.s.recv(1024)
-            print("FINISHED GETTING DATA")
             if self.code == UNREADY_BETWEEN_READY:
                 self.s.sendall(b'ready')
                 self.code = READY
 
             if self.code == READY:
                 data = self.s.recv(1024)
+                print(data)
                 if b"all ready" in data:
+                    print("HELLLLLLO")
                     self.code = ALL_READY
 
     def players_are_ready(self):

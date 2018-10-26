@@ -22,7 +22,6 @@ class InGameMenu(pg.sprite.Sprite):
         self.global_info = GlobalInfo(self.game, (GLOBAL_INFO_X, GLOBAL_INFO_Y))
         self.ready_btn = ReadyButton(self.game)
 
-
     def set_focus(self, *args, **kwargs):
         return self.unit_info.set_focus(*args, **kwargs)
 

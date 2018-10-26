@@ -1,3 +1,3 @@
-from .turrets import BeamTurret, SpitterTurret, MissileTurret, ZapTurret
+from .turrets import BeamTurret, SpitterTurret, MissileTurret, ZapTurret, ScudTurret
 from .structures import Barricade
 
